@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.scott.ngg.ReportMapper">
+
+  <!-- doSelectOne: 단건 조회 -->
+  <select id="doSelectOne" parameterType="ReportVO" resultType="ReportVO">
+    SELECT report_sq "reportSq", 
+		       type_sq "typeSq", 
+		       report_dt "reportDt", 
+		       report_cc_sq "reportCcSq", 
+		       report_ct "reportCt", 
+		       report_cnt "reportCnt", 
+		       report_st "reportSt" 
+    FROM report_t 
+    WHERE report_sq = #{reportSq}
+  </select>
+
+  <!-- doUpdate: 수정 -->
+  <update id="doUpdate" parameterType="ReportVO">
+    UPDATE report_t
+    SET type_sq = #{typeSq}, 
+        report_dt = #{reportDt}, 
+        report_cc_sq = #{reportCcSq}, 
+        report_ct = #{reportCt}, 
+        report_cnt = #{reportCnt}, 
+        report_st = #{reportSt} 
+    WHERE report_sq = #{reportSq}
+  </update>
+
+  <!-- doDelete: 삭제 -->
+  <delete id="doDelete" parameterType="ReportVO">
+    DELETE FROM report_t
+    WHERE report_sq = #{reportSq}
+  </delete>
+
+  <!-- doInsert: 삽입 -->
+  <insert id="doInsert" parameterType="ReportVO">
+    INSERT INTO report_t (
+				report_sq, 
+				type_sq, 
+				report_dt, 
+				report_cc_sq, 
+				report_ct, 
+				report_cnt, 
+				report_st 
+    ) VALUES (
+				#{reportSq}, 
+				#{typeSq}, 
+				#{reportDt}, 
+				#{reportCcSq}, 
+				#{reportCt}, 
+				#{reportCnt}, 
+				#{reportSt} 
+    )
+  </insert>
+
+
+  <!--========= for JUnit Test =========-->
+  <!-- getAll: 전체 조회 -->
+  <select id="getAll" resultType="ReportVO">
+    SELECT *
+    FROM report_t
+  </select>
+
+  <!-- getAll: 전체 개수 -->
+  <select id="getCount" resultType="int">
+    SELECT count(*) "cnt"
+    FROM report_t
+  </select>
+
+  <!-- getAll: 전체 삭제 -->
+  <delete id="deleteAll">
+    DELETE FROM report_t
+  </delete>
+
+
+
+</mapper>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.scott.ngg.WorkMapper">
+
+  <insert id="doInsert" parameterType="WorkVO">
+		INSERT INTO work_t (
+		    work_title, 
+		    user_id, 
+		    work_content, 
+		    work_read_cnt, 
+		    work_file, 
+		    work_ct1, 
+		    work_mod_dt, 
+		    work_reg_dt
+		) VALUES (
+		    #{workTitle}, 
+		    #{userId}, 
+		    #{workContent}, 
+		    #{workReadCnt}, 
+		    0, 
+		    #{workCt1}, 
+		    SYSDATE, 
+		    SYSDATE
+		)
+  </insert>
+  
+  <delete id="doDelete"  parameterType="WorkVO">
+    DELETE FROM work_t
+    WHERE work_sq = #{workSq}
+  </delete>
+  
+  <update id="doUpdate"  parameterType="WorkVO">
+		UPDATE work_t
+		SET work_title = #{workTitle}, 
+		    user_id = #{userId}, 
+		    work_content = #{workContent}, 
+		    work_file = #{workFile}, 
+		    work_ct1 = #{workCt1}, 
+		    work_mod_dt = SYSDATE
+		WHERE work_sq = #{workSq}
+  </update>  
+  
+  <select id="doSelectOne" parameterType="WorkVO" resultType="WorkVO">
+    SELECT 
+    FROM work_t
+    WHERE work_sq = #{workSq}
+  </select>
+  
+  <select id="doRetrieve" parameterType="WorkVO" resultType="WorkVO">
+  </select>
+
+
+  <!-- for JUnit Test -->
+  <select id="getAll" resultType="WorkVO">
+    SELECT *
+    FROM work_t
+  </select>
+
+  <select id="getCount" resultType="int">
+    SELECT count(*) "cnt"
+    FROM work_t
+  </select>
+
+  <delete id="deleteAll">
+    DELETE FROM work_t
+  </delete>
+  
+</mapper>
