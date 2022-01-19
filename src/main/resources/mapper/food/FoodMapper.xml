@@ -3,15 +3,13 @@
 <mapper namespace="kr.scott.ngg.FoodMapper">
   
   <!-- doRetreive 검색조건 -->
-  <!-- SearchDiv: food_name(10) -->
-  <sql id="searchCondition">
-      <where>
-          <choose>
-              <when test="searchDiv == '10' and searchWord != ''">
-                  food_name LIKE '%' || #{searchWord} || '%'
-              </when>
-          </choose>
-      </where>
+  <!-- SearchDiv: food_name -->
+   <sql id="searchCondition">
+     <where>
+         <if test="searchWord != ''">
+            food_name LIKE '%' || #{searchWord} || '%'
+         </if>
+     </where>
   </sql> 
     
   <!-- doRetrieve: 조회+검색,페이징 -->
@@ -36,7 +34,7 @@
 		            ORDER BY food_name ASC
 		        ) f
 		    ) ff
-		    WHERE rnum BETWEEN (#{pageSize}*#{pageNum}-1)+1 AND (#{pageSize}*#{pageNum}-1)+#{pageSize}
+		    WHERE rnum BETWEEN (#{pageSize}*(#{pageNum}-1))+1 AND (#{pageSize}*(#{pageNum}-1))+#{pageSize}
 		) A CROSS JOIN (
 		    SELECT COUNT(*) "totalNum"
 		    FROM food_t
