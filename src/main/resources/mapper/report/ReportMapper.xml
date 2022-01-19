@@ -1,16 +1,66 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.scott.ngg.ReportMapper">
+  
+  <!-- doRetreive 검색조건 -->
+  <!-- SearchDiv: report_cnt(10), report_dt(20) -->
+  <sql id="searchCondition">
+      <where>
+          <choose>
+              <when test="searchDiv == '10' and searchWord != ''">
+                  report_cnt LIKE '%' || #{searchWord} || '%'
+              </when>
+
+              <when test="searchDiv == '20' and startDate != '' and endDate != ''">
+                  report_dt BETWEEN #{startDate} AND #{endDate}
+              </when>
+          </choose>
+      </where>
+  </sql>
+
+  <!-- doRetrieve: 조회+검색,페이징 -->
+  <select id="doRetrieve" parameterType="SearchVO" resultType="ReportVO">
+    SELECT B.*, A.* 
+    FROM (
+        SELECT COUNT(*) total_cnt
+        FROM report_t
+        <include refid="searchCondition"/>
+    ) A CROSS JOIN (
+        SELECT rr.rnum "num",
+               rr.type_sq "typeSq", 
+               TO_CHAR(rr.report_dt, DECODE(TRUNC(rr.report_dt), TRUNC(SYSDATE), 'HH24:MI:SS', 'YYYY/MM/DD HH24:MI:SS')) "reportDt", 
+               rr.report_cc_sq "reportCcSq", 
+               rr.report_ct "reportCt", 
+               rr.report_cnt "reportCnt", 
+               rr.report_st "reportSt" 
+        FROM (
+            SELECT ROWNUM rnum,
+                   r.*
+            FROM (
+                SELECT type_sq, 
+                       report_dt, 
+                       report_cc_sq, 
+                       report_ct, 
+                       report_cnt, 
+                       report_st 
+                FROM report_t
+                <include refid="searchCondition"/>
+                ORDER BY report_st ASC, report_dt DESC
+            ) r
+        ) rr
+        WHERE rnum BETWEEN (#{pageSize}*#{pageNum}-1)+1 AND (#{pageSize}*#{pageNum}-1)+#{pageSize}
+    ) B
+  </select>
 
   <!-- doSelectOne: 단건 조회 -->
   <select id="doSelectOne" parameterType="ReportVO" resultType="ReportVO">
     SELECT report_sq "reportSq", 
-		       type_sq "typeSq", 
-		       report_dt "reportDt", 
-		       report_cc_sq "reportCcSq", 
-		       report_ct "reportCt", 
-		       report_cnt "reportCnt", 
-		       report_st "reportSt" 
+           type_sq "typeSq", 
+           TO_CHAR(report_dt, DECODE(TRUNC(report_dt), TRUNC(SYSDATE), 'HH24:MI:SS', 'YYYY/MM/DD HH24:MI:SS')) "reportDt", 
+           report_cc_sq "reportCcSq", 
+           report_ct "reportCt", 
+           report_cnt "reportCnt", 
+           report_st "reportSt" 
     FROM report_t 
     WHERE report_sq = #{reportSq}
   </select>
@@ -36,21 +86,19 @@
   <!-- doInsert: 삽입 -->
   <insert id="doInsert" parameterType="ReportVO">
     INSERT INTO report_t (
-				report_sq, 
-				type_sq, 
-				report_dt, 
-				report_cc_sq, 
-				report_ct, 
-				report_cnt, 
-				report_st 
+        type_sq, 
+        report_dt, 
+        report_cc_sq, 
+        report_ct, 
+        report_cnt, 
+        report_st 
     ) VALUES (
-				#{reportSq}, 
-				#{typeSq}, 
-				#{reportDt}, 
-				#{reportCcSq}, 
-				#{reportCt}, 
-				#{reportCnt}, 
-				#{reportSt} 
+        #{typeSq}, 
+        #{reportDt}, 
+        #{reportCcSq}, 
+        #{reportCt}, 
+        #{reportCnt}, 
+        #{reportSt} 
     )
   </insert>
 
