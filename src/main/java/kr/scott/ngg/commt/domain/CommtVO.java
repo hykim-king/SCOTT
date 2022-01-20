@@ -51,8 +51,17 @@ public class CommtVO extends DTO {
 		return comment_sq;
 	}
 
+	public void setComment_sq(int comment_sq) {
+		this.comment_sq = comment_sq;
+	}
+
+
 	public int getCommunity_sq() {
 		return community_sq;
+	}
+
+	public void setCommunity_sq(int community_sq) {
+		this.community_sq = community_sq;
 	}
 
 	public String getUser_id() {

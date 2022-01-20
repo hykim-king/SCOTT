@@ -37,6 +37,10 @@ public class MealVO extends DTO {
 		return mealSq;
 	}
 
+	public void setMealSq(int mealSq) {
+		this.mealSq = mealSq;
+	}
+
 	public String getUserId() {
 		return userId;
 	}

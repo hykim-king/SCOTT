@@ -32,6 +32,10 @@ public class FileVO extends DTO {
 		return fileSq;
 	}
 
+	public void setFileSq(int fileSq) {
+		this.fileSq = fileSq;
+	}
+
 	public String getFileOName() {
 		return fileOName;
 	}

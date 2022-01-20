@@ -58,6 +58,10 @@ public class WorkVO extends DTO {
 		return workSq;
 	}
 
+	public void setWorkSq(int workSq) {
+		this.workSq = workSq;
+	}
+
 	public String getWorkTitle() {
 		return workTitle;
 	}

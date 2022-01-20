@@ -33,8 +33,8 @@ public class CommuVO extends DTO {
 		// TODO Auto-generated constructor stub
 	}
 
-	public CommuVO(int communitySq, String communityTitle, String userId, String communityContent, int communityFile, int communityCt,
-			int communityReadCnt) {
+	public CommuVO(int communitySq, String communityTitle, String userId, String communityContent, int communityFile,
+			int communityCt, int communityReadCnt) {
 		this.communitySq = communitySq;
 		this.communityTitle = communityTitle;
 		this.userId = userId;
@@ -46,9 +46,9 @@ public class CommuVO extends DTO {
 		this.communityModDt = "";
 		this.communityRegDt = "";
 	}
-	
-	public CommuVO(int communitySq, String communityTitle, String userId, String communityContent, int communityFile, int communityCt,
-			int communityReadCnt, int communitySt, String communityModDt, String communityRegDt) {
+
+	public CommuVO(int communitySq, String communityTitle, String userId, String communityContent, int communityFile,
+			int communityCt, int communityReadCnt, int communitySt, String communityModDt, String communityRegDt) {
 		this.communitySq = communitySq;
 		this.communityTitle = communityTitle;
 		this.userId = userId;
@@ -63,6 +63,10 @@ public class CommuVO extends DTO {
 
 	public int getCommunitySq() {
 		return communitySq;
+	}
+
+	public void setCommunitySq(int communitySq) {
+		this.communitySq = communitySq;
 	}
 
 	public String getCommunityTitle() {
