@@ -55,7 +55,6 @@ public class CommtVO extends DTO {
 		this.comment_sq = comment_sq;
 	}
 
-
 	public int getCommunity_sq() {
 		return community_sq;
 	}

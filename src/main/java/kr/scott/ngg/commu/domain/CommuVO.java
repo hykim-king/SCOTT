@@ -143,10 +143,11 @@ public class CommuVO extends DTO {
 
 	@Override
 	public String toString() {
-		return "CommuVO [communityTitle=" + communityTitle + ", userId=" + userId + ", communityContent="
-				+ communityContent + ", communityFile=" + communityFile + ", communityCt=" + communityCt
-				+ ", communityReadCnt=" + communityReadCnt + ", communitySt=" + communitySt + ", communityModDt="
-				+ communityModDt + ", communityRegDt=" + communityRegDt + ", toString()=" + super.toString() + "]";
+		return "CommuVO [communitySq=" + communitySq + ", communityTitle=" + communityTitle + ", userId=" + userId
+				+ ", communityContent=" + communityContent + ", communityFile=" + communityFile + ", communityCt="
+				+ communityCt + ", communityReadCnt=" + communityReadCnt + ", communitySt=" + communitySt
+				+ ", communityModDt=" + communityModDt + ", communityRegDt=" + communityRegDt + ", toString()="
+				+ super.toString() + "]";
 	}
 
 }// --class
