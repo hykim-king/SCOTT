@@ -4,119 +4,119 @@ import kr.scott.ngg.cmn.DTO;
 
 public class CommtVO extends DTO {
 	/** 댓글 고유번호 */
-	private int comment_sq;
+	private int commentSq;
 	/** 댓글이 달린 게시글 고유번호 */
-	private int community_sq;
+	private int communitySq;
 	/** 댓글 작성자 */
-	private String user_id;
+	private String userId;
 	/** 댓글 내용 */
-	private String comment_content;
+	private String commentContent;
 	/** 댓글 첨부파일 번호 */
-	private int comment_file;
+	private int commentFile;
 	/** 댓글 공개상태 */
-	private int comment_st;
+	private int commentSt;
 	/** 댓글 작성일 */
-	private String comment_reg_dt;
+	private String commentRegDt;
 	/** 댓글 수정일 */
-	private String comment_mod_dt;
+	private String commentModDt;
 
 	public CommtVO() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public CommtVO(int comment_sq, int community_sq, String user_id, String comment_content, int comment_file) {
-		this.comment_sq = comment_sq;
-		this.community_sq = community_sq;
-		this.user_id = user_id;
-		this.comment_content = comment_content;
-		this.comment_file = comment_file;
-		this.comment_st = 1;
-		this.comment_reg_dt = "";
-		this.comment_mod_dt = "";
+	public CommtVO(int communitySq, String userId, String commentContent, int commentFile, int commentSt) {
+		this.commentSq = 0;
+		this.communitySq = communitySq;
+		this.userId = userId;
+		this.commentContent = commentContent;
+		this.commentFile = commentFile;
+		this.commentSt = commentSt;
+		this.commentRegDt = "";
+		this.commentModDt = "";
+	}
+	
+	public CommtVO(int commentSq, int communitySq, String userId, String commentContent, int commentFile, int commentSt,
+			String commentRegDt, String commentModDt) {
+		this.commentSq = commentSq;
+		this.communitySq = communitySq;
+		this.userId = userId;
+		this.commentContent = commentContent;
+		this.commentFile = commentFile;
+		this.commentSt = commentSt;
+		this.commentRegDt = commentRegDt;
+		this.commentModDt = commentModDt;
 	}
 
-	public CommtVO(int comment_sq, int community_sq, String user_id, String comment_content, int comment_file,
-			int comment_st, String comment_reg_dt, String comment_mod_dt) {
-		this.comment_sq = comment_sq;
-		this.community_sq = community_sq;
-		this.user_id = user_id;
-		this.comment_content = comment_content;
-		this.comment_file = comment_file;
-		this.comment_st = comment_st;
-		this.comment_reg_dt = comment_reg_dt;
-		this.comment_mod_dt = comment_mod_dt;
+	public int getCommentSq() {
+		return commentSq;
 	}
 
-	public int getComment_sq() {
-		return comment_sq;
+	public void setCommentSq(int commentSq) {
+		this.commentSq = commentSq;
 	}
 
-	public void setComment_sq(int comment_sq) {
-		this.comment_sq = comment_sq;
+	public int getCommunitySq() {
+		return communitySq;
 	}
 
-	public int getCommunity_sq() {
-		return community_sq;
+	public void setCommunitySq(int communitySq) {
+		this.communitySq = communitySq;
 	}
 
-	public void setCommunity_sq(int community_sq) {
-		this.community_sq = community_sq;
+	public String getUserId() {
+		return userId;
 	}
 
-	public String getUser_id() {
-		return user_id;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
-	public void setUser_id(String user_id) {
-		this.user_id = user_id;
+	public String getCommentContent() {
+		return commentContent;
 	}
 
-	public String getComment_content() {
-		return comment_content;
+	public void setCommentContent(String commentContent) {
+		this.commentContent = commentContent;
 	}
 
-	public void setComment_content(String comment_content) {
-		this.comment_content = comment_content;
+	public int getCommentFile() {
+		return commentFile;
 	}
 
-	public int getComment_file() {
-		return comment_file;
+	public void setCommentFile(int commentFile) {
+		this.commentFile = commentFile;
 	}
 
-	public void setComment_file(int comment_file) {
-		this.comment_file = comment_file;
+	public int getCommentSt() {
+		return commentSt;
 	}
 
-	public int getComment_st() {
-		return comment_st;
+	public void setCommentSt(int commentSt) {
+		this.commentSt = commentSt;
 	}
 
-	public void setComment_st(int comment_st) {
-		this.comment_st = comment_st;
+	public String getCommentRegDt() {
+		return commentRegDt;
 	}
 
-	public String getComment_reg_dt() {
-		return comment_reg_dt;
+	public void setCommentRegDt(String commentRegDt) {
+		this.commentRegDt = commentRegDt;
 	}
 
-	public void setComment_reg_dt(String comment_reg_dt) {
-		this.comment_reg_dt = comment_reg_dt;
+	public String getCommentModDt() {
+		return commentModDt;
 	}
 
-	public String getComment_mod_dt() {
-		return comment_mod_dt;
-	}
-
-	public void setComment_mod_dt(String comment_mod_dt) {
-		this.comment_mod_dt = comment_mod_dt;
+	public void setCommentModDt(String commentModDt) {
+		this.commentModDt = commentModDt;
 	}
 
 	@Override
 	public String toString() {
-		return "CommtVO [comment_sq=" + comment_sq + ", community_sq=" + community_sq + ", user_id=" + user_id
-				+ ", comment_content=" + comment_content + ", comment_file=" + comment_file + ", comment_st="
-				+ comment_st + ", comment_reg_dt=" + comment_reg_dt + ", comment_mod_dt=" + comment_mod_dt
-				+ ", toString()=" + super.toString() + "]";
+		return "CommtVO [commentSq=" + commentSq + ", communitySq=" + communitySq + ", userId=" + userId
+				+ ", commentContent=" + commentContent + ", commentFile=" + commentFile + ", commentSt=" + commentSt
+				+ ", commentRegDt=" + commentRegDt + ", commentModDt=" + commentModDt + "]";
 	}
+
 
 }// --class
