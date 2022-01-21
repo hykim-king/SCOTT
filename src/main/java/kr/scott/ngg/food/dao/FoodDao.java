@@ -1,61 +1,62 @@
-package kr.scott.ngg.report.dao;
+package kr.scott.ngg.food.dao;
 
 import java.sql.SQLException;
 import java.util.List;
 
 import kr.scott.ngg.cmn.SearchVO;
-import kr.scott.ngg.report.domain.ReportVO;
+import kr.scott.ngg.food.domain.FoodVO;
 
-public interface ReportDao {
+
+public interface FoodDao {
 	
 	// --------------------- default functions
 	/**
 	 * 단건 등록
 	 * 
-	 * @param ReportVO
+	 * @param FoodVO
 	 * @return int 1(성공)/0(실패)
 	 * @throws SQLException
 	 */
-	public int doInsert(ReportVO inVO);
+	public int doInsert(FoodVO inVO);
 
 	/**
 	 * 단건 삭제
 	 * 
-	 * @param ReportVO
+	 * @param FoodVO
 	 * @return int 1(성공)/0(실패)
 	 * @throws SQLException
 	 */
-	public int doDelete(ReportVO inVO);
+	public int doDelete(FoodVO inVO);
 	
 	/**
 	 * 단건 수정
 	 * 
-	 * @param ReportVO
+	 * @param FoodVO
 	 * @return int 1(성공)/0(실패)
 	 * @throws SQLException
 	 */
-	public int doUpdate(ReportVO inVO);
+	public int doUpdate(FoodVO inVO);
 	
 	/**
 	 * 단건 조회
 	 * 
-	 * @param ReportVO
-	 * @return ReportVO
+	 * @param FoodVO
+	 * @return FoodVO
 	 */
-	public ReportVO doSelectOne(ReportVO inVO);
+	public FoodVO doSelectOne(FoodVO inVO);
 	
 	/**
 	 * 목록 조회(with 검색, 페이징)
 	 * 
-	 * @param ReportVO
-	 * @return List<ReportVO>
+	 * @param FoodVO
+	 * @return List<FoodVO>
 	 * @throws SQLException
 	 */
-	public List<ReportVO> doRetrieve(SearchVO inVO);
+	public List<FoodVO> doRetrieve(SearchVO inVO);
 
 	// ----------------------------------------
 	// select all the list
-	public List<ReportVO> getAll();
+	public List<FoodVO> getAll();
 	
 	// get count
 	public int getCount();
@@ -64,5 +65,6 @@ public interface ReportDao {
 	public void deleteAll();
 	
 	// get last input data
-	public ReportVO getLastData();
+	public FoodVO getLastData();
+	
 }

@@ -7,6 +7,19 @@ import java.util.UUID;
 public class StringUtil {
 	
 	/**
+	 * 필수 입력 항목 null 체크 
+	 * 입력한 객체가 null이거나 ""일 경우 msgId: "30", msgContent: valueName은 필수 항목입니다. 반환
+	 * 아니면 null 반환
+	 * 
+	 * @param value 체크할 항목 객체
+	 * @param valueName 에러시 표시할 이름
+	 * @return MessageVO
+	 */
+	public static MessageVO checkRequiredValue(String value, String valueName) {
+		return (value == null || value.equals(""))? new MessageVO("30", "필수 입력 항목 누락: ["+valueName+"]"): null;
+	}
+	
+	/**
 	 * 32bit UUID 생성
 	 * @return
 	 */

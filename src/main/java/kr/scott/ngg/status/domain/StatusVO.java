@@ -8,7 +8,7 @@ public class StatusVO extends DTO {
 	/** 운동한 사람 */
 	private String userId;
 	/** 운동 상태 (0=운동안함 / 1=운동함) */
-	private String statusWorkSt;
+	private int statusWorkSt;
 	/** 운동 메모 */
 	private String statusWorkMe;
 
@@ -16,7 +16,7 @@ public class StatusVO extends DTO {
 		// TODO Auto-generated constructor stub
 	}
 
-	public StatusVO(String statusDate, String userId, String statusWorkSt, String statusWorkMe) {
+	public StatusVO(String statusDate, String userId, int statusWorkSt, String statusWorkMe) {
 		this.statusDate = statusDate;
 		this.userId = userId;
 		this.statusWorkSt = statusWorkSt;
@@ -39,11 +39,11 @@ public class StatusVO extends DTO {
 		this.userId = userId;
 	}
 
-	public String getStatusWorkSt() {
+	public int getStatusWorkSt() {
 		return statusWorkSt;
 	}
 
-	public void setStatusWorkSt(String statusWorkSt) {
+	public void setStatusWorkSt(int statusWorkSt) {
 		this.statusWorkSt = statusWorkSt;
 	}
 
@@ -60,5 +60,6 @@ public class StatusVO extends DTO {
 		return "StatusVO [statusDate=" + statusDate + ", userId=" + userId + ", statusWorkSt=" + statusWorkSt
 				+ ", statusWorkMe=" + statusWorkMe + ", toString()=" + super.toString() + "]";
 	}
+
 
 }// --class

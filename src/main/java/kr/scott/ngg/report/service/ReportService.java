@@ -1,4 +1,4 @@
-package kr.scott.ngg.report.dao;
+package kr.scott.ngg.report.service;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -6,8 +6,8 @@ import java.util.List;
 import kr.scott.ngg.cmn.SearchVO;
 import kr.scott.ngg.report.domain.ReportVO;
 
-public interface ReportDao {
-	
+public interface ReportService {
+
 	// --------------------- default functions
 	/**
 	 * 단건 등록
@@ -16,7 +16,7 @@ public interface ReportDao {
 	 * @return int 1(성공)/0(실패)
 	 * @throws SQLException
 	 */
-	public int doInsert(ReportVO inVO);
+	public int doInsert(ReportVO inVO) throws SQLException;
 
 	/**
 	 * 단건 삭제
@@ -25,8 +25,8 @@ public interface ReportDao {
 	 * @return int 1(성공)/0(실패)
 	 * @throws SQLException
 	 */
-	public int doDelete(ReportVO inVO);
-	
+	public int doDelete(ReportVO inVO) throws SQLException;
+
 	/**
 	 * 단건 수정
 	 * 
@@ -34,16 +34,16 @@ public interface ReportDao {
 	 * @return int 1(성공)/0(실패)
 	 * @throws SQLException
 	 */
-	public int doUpdate(ReportVO inVO);
-	
+	public int doUpdate(ReportVO inVO) throws SQLException;
+
 	/**
 	 * 단건 조회
 	 * 
 	 * @param ReportVO
 	 * @return ReportVO
 	 */
-	public ReportVO doSelectOne(ReportVO inVO);
-	
+	public ReportVO doSelectOne(ReportVO inVO) throws SQLException;
+
 	/**
 	 * 목록 조회(with 검색, 페이징)
 	 * 
@@ -51,18 +51,8 @@ public interface ReportDao {
 	 * @return List<ReportVO>
 	 * @throws SQLException
 	 */
-	public List<ReportVO> doRetrieve(SearchVO inVO);
+	public List<ReportVO> doRetrieve(SearchVO inVO) throws SQLException;
 
-	// ----------------------------------------
-	// select all the list
-	public List<ReportVO> getAll();
 	
-	// get count
-	public int getCount();
-	
-	// delete all
-	public void deleteAll();
-	
-	// get last input data
-	public ReportVO getLastData();
+	// --------------------- Report functions
 }
