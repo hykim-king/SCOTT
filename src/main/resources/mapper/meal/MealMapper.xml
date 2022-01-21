@@ -15,7 +15,8 @@
   </sql>
   
   <!-- doRetreive 검색 조건 -->
-  <!-- SearchDiv: user_id(10), meal_content(20), meal_reg_dt(30), meal_mod_dt(40)-->
+  <!-- SearchDiv: user_id(10), meal_content(20)-->
+  <!-- SearchDateDiv - meal_reg_dt(10), meal_mod_dt(20) --> 
   <sql id="searchCondition">
       <where>
           <choose>
@@ -26,14 +27,26 @@
               <when test="searchDiv == '20' and searchWord != ''">
                   meal_content LIKE '%' || #{searchWord} || '%'
               </when>
+          </choose>
               
-              <!-- 기간 검색 -->
-              <when test="searchDiv == '30' and startDate != '' and endDate != ''">
-                  meal_reg_dt BETWEEN TO_DATE(#{startDate}) AND TO_DATE(#{endDate})
+          <!-- 기간 검색 -->
+          <choose>
+              <when test="searchDateDiv == '10'">
+                  <if test="startDate != ''">
+                    AND meal_reg_dt <![CDATA[>= TO_DATE(#{startDate})]]>
+                  </if>
+                  <if test="endDate != ''">
+                    AND meal_reg_dt <![CDATA[<= TO_DATE(#{endDate})]]>
+                  </if>
               </when>
-              
-              <when test="searchDiv == '40' and startDate != '' and endDate != ''">
-                  meal_mod_dt BETWEEN TO_DATE(#{startDate}) AND TO_DATE(#{endDate})
+
+              <when test="searchDateDiv == '20'">
+                  <if test="startDate != ''">
+                    AND meal_mod_dt <![CDATA[>= TO_DATE(#{startDate})]]>
+                  </if>
+                  <if test="endDate != ''">
+                    AND meal_mod_dt <![CDATA[<= TO_DATE(#{endDate})]]>
+                  </if>
               </when>
           </choose>
       </where>
@@ -41,74 +54,74 @@
   
   <!-- doRetrieve: 조회+검색,페이징 -->
   <select id="doRetrieve" parameterType="SearchVO" resultType="MealVO">
-		SELECT B.*, A.* 
-		FROM (
-		    SELECT COUNT(*) "totalNum" 
-		    FROM meal_t
+    SELECT B.*, A.* 
+    FROM (
+        SELECT COUNT(*) "totalNum" 
+        FROM meal_t
         <include refid="searchCondition"/>
-		) A CROSS JOIN (
-			SELECT mm.rnum "num", 
-			       mm.meal_sq "mealSq", 
-			       mm.user_id "userId", 
-			       mm.meal_content "mealContent", 
-			       TO_CHAR(mm.meal_reg_dt, 'YYYY/MM/DD') "mealRegDt", 
-			       TO_CHAR(mm.meal_mod_dt, 'YYYY/MM/DD') "mealModDt" 
-			FROM (
-			    SELECT ROWNUM rnum,
-			           m.* 
-			    FROM (
-			        SELECT meal_sq, 
-			               user_id, 
-			               meal_content, 
-			               meal_reg_dt, 
-			               meal_mod_dt 
-			        FROM meal_t
-			        <include refid="searchCondition"/>
-			        <include refid="orderCondition"/>
-			    ) m
-			) mm
-			WHERE rnum BETWEEN (#{pageSize}*(#{pageNum}-1))+1 AND (#{pageSize}*(#{pageNum}-1))+#{pageSize}
-		) B  
+    ) A CROSS JOIN (
+      SELECT mm.rnum "num", 
+             mm.meal_sq "mealSq", 
+             mm.user_id "userId", 
+             mm.meal_content "mealContent", 
+             TO_CHAR(mm.meal_reg_dt, 'YYYY/MM/DD') "mealRegDt", 
+             TO_CHAR(mm.meal_mod_dt, 'YYYY/MM/DD') "mealModDt" 
+      FROM (
+          SELECT ROWNUM rnum,
+                 m.* 
+          FROM (
+              SELECT meal_sq, 
+                     user_id, 
+                     meal_content, 
+                     meal_reg_dt, 
+                     meal_mod_dt 
+              FROM meal_t
+              <include refid="searchCondition"/>
+              <include refid="orderCondition"/>
+          ) m
+      ) mm
+      WHERE rnum BETWEEN (#{pageSize}*(#{pageNum}-1))+1 AND (#{pageSize}*(#{pageNum}-1))+#{pageSize}
+    ) B  
   </select>
 
   <!-- doSelectOne: 단건 조회 -->
   <select id="doSelectOne" parameterType="MealVO" resultType="MealVO">
-		SELECT meal_sq "mealSq", 
-		       user_id "userId", 
-		       meal_content "mealContent", 
+    SELECT meal_sq "mealSq", 
+           user_id "userId", 
+           meal_content "mealContent", 
            TO_CHAR(meal_reg_dt, 'YYYY/MM/DD') "mealRegDt", 
            TO_CHAR(meal_mod_dt, 'YYYY/MM/DD') "mealModDt"  
-		FROM meal_t
-		WHERE meal_sq = #{mealSq}
+    FROM meal_t
+    WHERE meal_sq = #{mealSq}
   </select>
 
   <!-- doUpdate: 수정 -->
   <update id="doUpdate" parameterType="MealVO">
-		UPDATE meal_t
-		SET meal_content = #{mealContent}, 
-		    meal_mod_dt = SYSDATE 
-		WHERE meal_sq = #{mealSq}
+    UPDATE meal_t
+    SET meal_content = #{mealContent}, 
+        meal_mod_dt = SYSDATE 
+    WHERE meal_sq = #{mealSq}
   </update>
 
   <!-- doDelete: 삭제 -->
   <delete id="doDelete" parameterType="MealVO">
-		DELETE FROM meal_t
-		WHERE meal_sq = #{mealSq}
+    DELETE FROM meal_t
+    WHERE meal_sq = #{mealSq}
   </delete>
 
   <!-- doInsert: 삽입 -->
   <insert id="doInsert" parameterType="MealVO">
-		INSERT INTO meal_t (
-		    user_id, 
-		    meal_content, 
-		    meal_reg_dt, 
-		    meal_mod_dt 
-		) VALUES (
-		    #{userId}, 
-		    #{mealContent}, 
-		    #{mealRegDt}, 
-		    #{mealModDt} 
-		)
+    INSERT INTO meal_t (
+        user_id, 
+        meal_content, 
+        meal_reg_dt, 
+        meal_mod_dt 
+    ) VALUES (
+        #{userId}, 
+        #{mealContent}, 
+        #{mealRegDt}, 
+        #{mealModDt} 
+    )
   </insert>
 
 
@@ -132,16 +145,16 @@
 
   <!-- getLastData: 마지막 입력된 값 가져오기 -->
   <select id="getLastData" resultType="MealVO">
-	  SELECT meal_sq "mealSq", 
-		       user_id "userId", 
-		       meal_content "mealContent", 
+    SELECT meal_sq "mealSq", 
+           user_id "userId", 
+           meal_content "mealContent", 
            TO_CHAR(meal_reg_dt, 'YYYY/MM/DD') "mealRegDt", 
            TO_CHAR(meal_mod_dt, 'YYYY/MM/DD') "mealModDt"  
-		FROM meal_t
-		WHERE meal_reg_dt = (
-		    SELECT LAST_VALUE(meal_reg_dt) OVER()
-		    FROM meal_t
-		)
+    FROM meal_t
+    WHERE meal_reg_dt = (
+        SELECT LAST_VALUE(meal_reg_dt) OVER()
+        FROM meal_t
+    )
   </select>
 
 
