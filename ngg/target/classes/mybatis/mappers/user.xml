@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.user">
+
+	<resultMap id="userResult" type="UserVO">
+		<result property="userId" column="user_id" />
+		<result property="userPw" column="user_pw" />
+		<result property="userNn" column="user_nn" />
+		<result property="userEmail" column="user_email" />
+		<result property="userBirth" column="user_birth" />
+		<result property="userGender" column="user_gender" />
+		<result property="userHeight" column="user_height" />
+		<result property="userWeight" column="user_weight" />
+		<result property="userGrade" column="user_grade" />
+		<result property="userActkcal" column="user_actkcal" />
+		<result property="userGoal" column="user_goal" />
+		<result property="userJoinDt" column="user_join_dt" />
+		<result property="userPoint" column="user_point" />
+		<result property="userLastLogin" column="user_last_login" />
+		<result property="userIsAdmin" column="user_is_admin" />
+		<result property="userIsActive" column="user_is_active" />
+	</resultMap>	
+
+	<select id="login" resultType="UserVO"  parameterType="java.util.Map"  >
+	    <![CDATA[
+			select * 
+			  from user_t 
+			 where user_id=#{userId}
+			   and user_pw=#{userPw}
+		]]>
+	</select>
+	
+	<select id="selectOverlappedID" parameterType="String" resultType="String">
+	   select decode(count(*),1,'true',0,'false')
+	     from user_t
+	    where user_id = #{userId}
+	</select>
+	
+	<select id="selectOverlappedNn" parameterType="String" resultType="String">
+	   select decode(count(*),1,'true',0,'false')
+	     from user_t
+	    where user_nn = #{userNn}
+	</select>
+	
+  <insert id="insertUser"  parameterType="UserVO">
+  <![CDATA[
+    	insert into user_t          (user_id,
+				 					 user_pw,
+				 					 user_nn,
+				 					 user_email,
+				 					 user_birth,
+				 					 user_gender,
+				 					 user_height,
+				 					 user_weight,
+				 					 user_grade,
+				 					 user_actkcal,
+				 					 user_goal,
+				 					 user_join_dt,
+				 					 user_point,
+				 					 user_last_login,
+				 					 user_is_admin,
+				 					 user_is_active
+				 					 )
+				 			values  (#{userId},
+				 					 #{userPw},
+				 					 #{userNn},
+				 					 #{userEmail},
+				 					 #{userBirth},
+				 					 #{userGender},
+				 					 #{userHeight},
+				 					 #{userWeight},
+				 					 #{userGrade},
+				 					 #{userActkcal},
+				 					 #{userGoal},
+				 					 #{userJoinDt},
+				 					 #{userPoint},
+				 					 #{userLastLogin},
+				 					 #{userIsAdmin},
+				 					 #{userIsActive}
+				 					 )
+                                      
+   ]]>      
+  </insert>
+</mapper>

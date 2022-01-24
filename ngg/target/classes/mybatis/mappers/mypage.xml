@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="mapper.mypage">
+	
+	<update id="updateMyInfo" parameterType="java.util.HashMap">
+	   update user_t
+		<set>
+			<if test=" userPw       !=''  and userPw       !=null">
+			    user_pw=#{userPw},
+			</if>
+		</set>
+        <set>
+			<if test= "userNn       != '' and userNn       !=null" >
+			    user_nn=#{userNn},
+			</if>
+		</set>
+        <set>
+			<if test= "userEmail    != '' and userEmail    !=null" >
+			    user_email=#{userEmail},
+			</if>
+		</set>
+        <set>
+			<if test= "userBirth    != '' and userBirth    !=null" >
+			    user_birth=#{userBirth},
+			</if>
+		</set>
+        <set>
+			<if test= "userGender   != '' and userGender   !=null" >
+			    user_gender=#{userGender},
+			</if>
+		</set>
+        <set>
+			<if test= "userHeight   != '' and userHeight   !=null" >
+			    user_height=#{userHeight},
+			</if>
+		</set>
+        <set>
+			<if test= "userWeight   != '' and userWeight   !=null" >
+			    user_weight=#{userWeight},
+			</if>
+		</set>
+        <set>
+			<if test= "userGrade    != '' and userGrade    !=null" >
+			    user_grade=#{userGrade},
+			</if>
+		</set>
+        <set>
+			<if test= "userActkcal  != '' and userActkcal  !=null" >
+			    user_actkcal=#{userActkcal},
+			</if>
+		</set>
+        <set>
+			<if test= "userGoal     != '' and userGoal     !=null" >
+			    user_goal=#{userGoal},
+			</if>
+		</set>
+        <set>
+			<if test= "userJoinDt   != '' and userJoinDt   !=null" >
+			    user_join_dt=#{userJoinDt},
+			</if>
+		</set>
+        <set>
+			<if test= "userPoint    != '' and userPoint    !=null" >
+			    user_point=#{userPoint},
+			</if>
+		</set>
+        <set>
+			<if test= "userLastLogin!= '' and userLastLogin!=null" >
+			    user_last_login=#{userLastLogin},
+			</if>
+		</set>
+        <set>
+			<if test= "userIsAdmin  != '' and userIsAdmin  !=null" >
+			    user_is_admin=#{userIsAdmin},
+			</if>
+		</set>
+        <set>
+			<if test= "userIsActive != '' and userIsActive !=null" >
+			    user_is_active=#{userIsActive},
+			</if>
+		</set>
+		where user_id=#{userId}
+	</update>
+	
+	<select id="selectMyInfo" resultType="memberVO" parameterType="String"  >
+	    <![CDATA[
+			select * from user_t
+			where user_id = #{userId}
+    	]]>
+	</select>	
+</mapper>
