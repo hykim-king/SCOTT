@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
@@ -27,7 +28,8 @@ public class ReportController {
 	@Autowired
 	ReportService rService;
 	
-	
+	@Autowired
+	@Qualifier("mailSender")
 	MailSender mailSender;
 	
 	public ReportController() {}
@@ -41,7 +43,9 @@ public class ReportController {
 	}
 	
 	
-	@RequestMapping(value = "/doInsert.do",method = RequestMethod.POST)
+	@RequestMapping(value = "/doInsert.do",method = RequestMethod.POST,
+			produces = "application/json;charset=UTF-8")
+	@ResponseBody
 	public String report(ReportVO inVO) throws SQLException{
 		LOG.debug("========================");
 		LOG.debug("inVO: "+inVO);
@@ -51,7 +55,7 @@ public class ReportController {
 		int flag = rService.doInsert(inVO);
 		if(1==flag) {
 			resultMsg = "신고가 접수되었습니다";
-			//sendReportMail(); --???
+			sendReportMail(inVO); 
 		}else {
 			resultMsg = "신고 실패";
 		}
@@ -66,15 +70,16 @@ public class ReportController {
 	
 	
 	
-	private void sendReportMail(ReportVO report, Model model) {
+	private void sendReportMail(ReportVO report) {
 		
 		SimpleMailMessage simpleMessage = new SimpleMailMessage();
-		simpleMessage.setTo(); //관리자 이메일 
+		simpleMessage.setTo("aprk45@naver.com"); //관리자 이메일 
 		simpleMessage.setFrom("www.ngg.com");
 		simpleMessage.setSubject("신고접수");
 		
-		//simpleMessage.setText(user.getName() + "사용자가 " + report.getReportCcSq.name() + "게시물에 "+report.getReportCt.name()+
-		// "로 신고했습니다.");
+		simpleMessage.setText("게시구분 "+report.getTypeSq()+"번," +report.getReportCcSq()+"번 게시물에 "+report.getReportUser() + "사용자가 "
+		+ report.getReportCt()+"번 항목에 위배되는 신고가 접수되었습니다. 상세 내역은"+report.getReportCt());
+		
 		mailSender.send(simpleMessage);
 	}
 	

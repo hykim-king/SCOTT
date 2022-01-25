@@ -99,7 +99,6 @@
 		$("#doReport").on("click",function(e){
 			
 			window.open("${cp}/report/doReport.do","report","width=400, height=300,left=100,top=50");
-			//window.location.href="${cp}/report/doReport.do";
 		});    	
     	
     	function doRetrieve(page) {

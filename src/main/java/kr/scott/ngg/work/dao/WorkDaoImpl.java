@@ -16,7 +16,7 @@ public class WorkDaoImpl implements WorkDao {
 	final Logger LOG = LogManager.getLogger(getClass());
 
 	@Autowired
-	private SqlSessionTemplate sqlSessionTemplate;
+	SqlSessionTemplate sqlSessionTemplate;
 
 	final String NAMESPACE = "kr.scott.ngg.work";
 

@@ -52,36 +52,35 @@
     	
     	$("#doInsert").on("click",function(e){
     		
-   		let url = "${cp}/report/doInsert.do";
+		let reportUser = ${sessionScope.user.name } //신고자
+		let reportCt   = $("#reportCt").val(); //신고구분
+		let reportCnt  = $("#reportCnt").val();//신고내용
+	  //let reportCcSq =                      //신고게시글(댓글,게시글)의 고유 번호
+	  //let typeSq     =                      //신고게시글(댓글,게시글)의 종류
+		console.log(reportCt);
+		console.log(reportCnt);
+		console.log(reportUser);
 		
-		let reportCt = $("#reportCt").val();
-		let reportCnt = $("#reportCnt").val();
-		
-		console.log(reportCt)
-		console.log(reportCnt)
-		
+		if (confirm("신고하시겠습니까?") == false)
+			return;
 		$.ajax({
  		          type:"POST",
  		          url:"${cp}/report/doInsert.do",
  		          data:{
- 		        	 "reportCt":reportCt,
+ 		        	 "reportUser":reportUser,
+ 		        	  "reportCt":reportCt,
  		        	 "reportCnt":reportCnt
  		          } ,
- 		          dataType: "html",
- 		          success:function(data){
- 		            console.log("앙!")
+ 		          dataType: "json",
+ 		        	success:function(data){
+ 		            console.log("data"+data)
+ 		            alert(data.msgContents)
+		    		window.close();
  		          },
  		          error:function(xhr){
  		          console.log(xhr.status+"/"+xhr.errorText);
  		          }
- 		          
  		      });
-		
-		if (confirm("신고하시겠습니까?") == false)
-			return;
-			alert("신고가 정상 접수되었습니다.")
-		    window.close();
-    		
     	});//doInsert
     	
     	

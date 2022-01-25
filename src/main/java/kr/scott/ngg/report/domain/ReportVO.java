@@ -5,6 +5,8 @@ import kr.scott.ngg.cmn.DTO;
 public class ReportVO extends DTO {
 	/** 신고 번호 */
 	private int reportSq;
+	/** 신고한 유저*/
+	private String reportUser;
 	/** 신고 타입 */
 	private int typeSq;
 	/** 신고일 */
@@ -31,9 +33,9 @@ public class ReportVO extends DTO {
 		this.reportSt = 0;
 	}
 
-	public ReportVO( int typeSq, String reportDt, int reportCcSq, int reportCt, String reportCnt
+	public ReportVO( String reportUser,int typeSq, String reportDt, int reportCcSq, int reportCt, String reportCnt
 			) {
-		
+		this.reportUser = reportUser;
 		this.typeSq = typeSq;
 		this.reportDt = reportDt;
 		this.reportCcSq = reportCcSq;
@@ -83,11 +85,20 @@ public class ReportVO extends DTO {
 		this.reportSt = reportSt;
 	}
 
-	@Override
-	public String toString() {
-		return "ReportVO [reportSq=" + reportSq + ", typeSq=" + typeSq + ", reportDt=" + reportDt + ", reportCcSq="
-				+ reportCcSq + ", reportCt=" + reportCt + ", reportCnt=" + reportCnt + ", reportSt=" + reportSt
-				+ ", toString()=" + super.toString() + "]";
+	public String getReportUser() {
+		return reportUser;
 	}
 
+	public void setReportUser(String reportUser) {
+		this.reportUser = reportUser;
+	}
+
+	@Override
+	public String toString() {
+		return "ReportVO [reportSq=" + reportSq + ", reportUser=" + reportUser + ", typeSq=" + typeSq + ", reportDt="
+				+ reportDt + ", reportCcSq=" + reportCcSq + ", reportCt=" + reportCt + ", reportCnt=" + reportCnt
+				+ ", reportSt=" + reportSt + ", toString()=" + super.toString() + "]";
+	}
+
+	
 }// --class
