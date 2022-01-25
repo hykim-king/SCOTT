@@ -6,6 +6,13 @@ import java.util.UUID;
 
 public class StringUtil {
 	
+	
+	
+	public static String getRenameFile(String format) {
+		return getFormatDate(format)+getUUID();
+	}
+	
+	
 	/**
 	 * 32bit UUID 생성
 	 * @return

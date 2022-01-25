@@ -31,15 +31,15 @@ public class WorkVO extends DTO {
 		// TODO Auto-generated constructor stub
 	}
 
-	public WorkVO(String workTitle, String userId, String workContent, int workReadCnt, int workFile, int workCt1) {
+	public WorkVO( String workTitle, String userId, String workContent, int workReadCnt, int workFile, int workCt1) {
+		
 		this.workTitle = workTitle;
 		this.userId = userId;
 		this.workContent = workContent;
 		this.workReadCnt = workReadCnt;
 		this.workFile = workFile;
 		this.workCt1 = workCt1;
-		this.workModDt = "";
-		this.workRegDt = "";
+		
 	}
 
 	public WorkVO(String workTitle, String userId, String workContent, int workReadCnt, int workFile, int workCt1,
@@ -56,6 +56,10 @@ public class WorkVO extends DTO {
 
 	public int getWorkSq() {
 		return workSq;
+	}
+
+	public void setWorkSq(int workSq) {
+		this.workSq = workSq;
 	}
 
 	public String getWorkTitle() {
@@ -124,7 +128,7 @@ public class WorkVO extends DTO {
 
 	@Override
 	public String toString() {
-		return "WorkVO [workTitle=" + workTitle + ", userId=" + userId + ", workContent=" + workContent
+		return "WorkVO [workSq="+workSq+",workTitle=" + workTitle + ", userId=" + userId + ", workContent=" + workContent
 				+ ", workReadCnt=" + workReadCnt + ", workFile=" + workFile + ", workCt1=" + workCt1 + ", workModDt="
 				+ workModDt + ", workRegDt=" + workRegDt + ", toString()=" + super.toString() + "]";
 	}

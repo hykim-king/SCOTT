@@ -23,7 +23,6 @@ public class ReportVO extends DTO {
 	}
 
 	public ReportVO(int reportSq, int typeSq, int reportCcSq, int reportCt) {
-		this.reportSq = reportSq;
 		this.typeSq = typeSq;
 		this.reportDt = "";
 		this.reportCcSq = reportCcSq;
@@ -32,15 +31,15 @@ public class ReportVO extends DTO {
 		this.reportSt = 0;
 	}
 
-	public ReportVO(int reportSq, int typeSq, String reportDt, int reportCcSq, int reportCt, String reportCnt,
-			int reportSt) {
-		this.reportSq = reportSq;
+	public ReportVO( int typeSq, String reportDt, int reportCcSq, int reportCt, String reportCnt
+			) {
+		
 		this.typeSq = typeSq;
 		this.reportDt = reportDt;
 		this.reportCcSq = reportCcSq;
 		this.reportCt = reportCt;
 		this.reportCnt = reportCnt;
-		this.reportSt = reportSt;
+		
 	}
 
 	public int getReportSq() {
@@ -55,9 +54,6 @@ public class ReportVO extends DTO {
 		return reportDt;
 	}
 
-	public void setReportDt(String reportDt) {
-		this.reportDt = reportDt;
-	}
 
 	public int getReportCcSq() {
 		return reportCcSq;

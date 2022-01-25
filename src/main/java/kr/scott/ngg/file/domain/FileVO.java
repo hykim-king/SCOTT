@@ -5,6 +5,8 @@ import kr.scott.ngg.cmn.DTO;
 public class FileVO extends DTO {
 	/** 파일 고유번호 */
 	private int fileSq;
+	/** 파일 게시판 태그? 운동:1 커뮤니티:2 */
+	private int fileTg;
 	/** 원본 파일명 */
 	private String fileOName;
 	/** 저장 파일명 */
@@ -21,7 +23,8 @@ public class FileVO extends DTO {
 		// TODO Auto-generated constructor stub
 	}
 
-	public FileVO(int fileSq, String fileOName, String fileSName, String filePath) {
+	public FileVO(int fileSq, int fileTg, String fileOName, String fileSName, String filePath) {
+		this.fileTg = fileTg;
 		this.fileSq = fileSq;
 		this.fileOName = fileOName;
 		this.fileSName = fileSName;
@@ -56,10 +59,20 @@ public class FileVO extends DTO {
 		this.filePath = filePath;
 	}
 
+	public int getFileTg() {
+		return fileTg;
+	}
+
+	public void setFileTg(int fileTg) {
+		this.fileTg = fileTg;
+	}
+
 	@Override
 	public String toString() {
-		return "FileVO [fileSq=" + fileSq + ", fileOName=" + fileOName + ", fileSName=" + fileSName + ", filePath="
-				+ filePath + ", toString()=" + super.toString() + "]";
+		return "FileVO [fileSq=" + fileSq + ", fileTg=" + fileTg + ", fileOName=" + fileOName + ", fileSName="
+				+ fileSName + ", filePath=" + filePath + ", toString()=" + super.toString() + "]";
 	}
+
+	
 
 }// --class
