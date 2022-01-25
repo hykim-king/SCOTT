@@ -149,7 +149,7 @@ public class WorkController {
 		WorkVO outVO = this.workService.doSelectOne(inVO);
 		LOG.debug("outVO: "+outVO);
 		model.addAttribute("vo",outVO);
-		return "work/work_mng";
+		return "work/work_select";
 	}
 	
 	

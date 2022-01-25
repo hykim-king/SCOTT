@@ -50,42 +50,37 @@
     <script type="text/javascript">
     $(document).ready(function(){
     	
-    	
-    	
     	$("#doInsert").on("click",function(e){
-    		
     		
    		let url = "${cp}/report/doInsert.do";
 		
 		let reportCt = $("#reportCt").val();
 		let reportCnt = $("#reportCnt").val();
 		
+		console.log(reportCt)
+		console.log(reportCnt)
 		
-		let parameter = {
-				"reportCt":reportCt ,
-				"reportCnt":reportCnt
-		};
-		let method = "POST"
-		let async  = true;
+		$.ajax({
+ 		          type:"POST",
+ 		          url:"${cp}/report/doInsert.do",
+ 		          data:{
+ 		        	 "reportCt":reportCt,
+ 		        	 "reportCnt":reportCnt
+ 		          } ,
+ 		          dataType: "html",
+ 		          success:function(data){
+ 		            console.log("앙!")
+ 		          },
+ 		          error:function(xhr){
+ 		          console.log(xhr.status+"/"+xhr.errorText);
+ 		          }
+ 		          
+ 		      });
+		
 		if (confirm("신고하시겠습니까?") == false)
 			return;
-		
-		EClass.callAjax(url, parameters, method,
-				async, function(data) {
-					console.log("msgId: "
-							+ data.msgId);
-					console.log("msgContents: "
-							+ data.msgContents);
-
-					if ("1" == data.msgId) {
-						alert(data.msgContents);
-						moveToList();
-					} else {
-						alert(data.msgContents);
-					}
-
-				});//callback
-    		
+			alert("신고가 정상 접수되었습니다.")
+		    window.close();
     		
     	});//doInsert
     	
@@ -135,81 +130,5 @@
 		</div>
 		<!-- 신고 사유------------------------------------------------ -->
 		
-		<div class="row text-center" id="report_frm">
-			<div class="row" id="report_head">
-				<h2>신고하기</h2>
-			</div>
-				<strong><span>신고사유 선택</span></strong>
-				<hr>
-			<div class="row text-left" id="report_body">
-                 <ul>
-                 <li id="C" class="reason">
-                            <div class="choice_wrap">
-                                <input type="radio" name="inpReasonChoice" class="inp_radio">
-                                <label for="inpChoice1" class="lab_radio"><span
-                                        class="ico_report ico_check"></span><span>욕설, 비방, 차별, 혐오</span><span
-                                        class="ico_report ico_arr"></span></label>
-                            </div>
-                        </li>
-                        <li id="A" class="reason">
-                            <div class="choice_wrap">
-                                <input type="radio" name="inpReasonChoice" class="inp_radio">
-                                <label for="inpChoice1" class="lab_radio"><span
-                                        class="ico_report ico_check"></span><span>홍보, 영리목적</span><span
-                                        class="ico_report ico_arr"></span></label>
-                            </div>
-                        </li>
-                        <li id="U" class="reason">
-                            <div class="choice_wrap">
-                                <input type="radio" name="inpReasonChoice" class="inp_radio">
-                                <label for="inpChoice1" class="lab_radio"><span
-                                        class="ico_report ico_check"></span><span>불법 정보</span><span
-                                        class="ico_report ico_arr"></span></label>
-                            </div>
-                        </li>
-                        <li id="O" class="reason">
-                            <div class="choice_wrap">
-                                <input type="radio" name="inpReasonChoice" class="inp_radio">
-                                <label for="inpChoice1" class="lab_radio"><span
-                                        class="ico_report ico_check"></span><span>음란, 청소년 유해</span><span
-                                        class="ico_report ico_arr"></span></label>
-                            </div>
-                        </li>
-                        <li id="P" class="reason">
-                            <div class="choice_wrap">
-                                <input type="radio" name="inpReasonChoice" class="inp_radio">
-                                <label for="inpChoice1" class="lab_radio"><span
-                                        class="ico_report ico_check"></span><span>개인 정보 노출, 유포, 거래</span><span
-                                        class="ico_report ico_arr"></span></label>
-                            </div>
-                        </li>
-                        <li id="E" class="reason">
-                            <div class="choice_wrap">
-                                <input type="radio" name="inpReasonChoice" class="inp_radio">
-                                <label for="inpChoice1" class="lab_radio"><span
-                                        class="ico_report ico_check"></span><span>도배, 스팸</span><span
-                                        class="ico_report ico_arr"></span></label>
-                            </div>
-                        </li>
-                        <li id="G" class="reason">
-                            <div class="choice_wrap">
-                                <input type="radio" name="inpReasonChoice" class="inp_radio">
-                                <label for="inpChoice1" class="lab_radio"><span
-                                        class="ico_report ico_check"></span><span>기타</span><span
-                                        class="ico_report ico_arr"></span></label>
-                            </div>
-                            <div class="wrap_additional">
-                                <div class="tfetc_wrap"><textarea class="tf_etc" id="etcReason"
-                                                                  placeholder="신고 사유 직접 입력 (최대 500자)"
-                                                                  onkeyup="limit('tf_etc', 500)"></textarea>
-                                </div>
-                            </div>
-                        </li>
-                 </ul>        
-			</div>
-		</div>
-		
-		
-	</div>
 </body>
 </html>

@@ -41,9 +41,7 @@ public class ReportController {
 	}
 	
 	
-	@RequestMapping(value = "/doInsert.do",method = RequestMethod.POST,
-			produces = "application/json;charset=UTF-8")
-	@ResponseBody
+	@RequestMapping(value = "/doInsert.do",method = RequestMethod.POST)
 	public String report(ReportVO inVO) throws SQLException{
 		LOG.debug("========================");
 		LOG.debug("inVO: "+inVO);

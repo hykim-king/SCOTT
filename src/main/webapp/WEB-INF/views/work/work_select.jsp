@@ -31,6 +31,6 @@
     </script>
 </head>
 <body>
-
+	<c:out value="${vo.workTitle }"></c:out>
 </body>
 </html>
