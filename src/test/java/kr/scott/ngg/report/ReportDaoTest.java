@@ -42,7 +42,8 @@ public class ReportDaoTest {
 		assertNotNull(context);
 		assertNotNull(rDao);
 		
-		report01 = new ReportVO(1,"2022/01/24",1,1,"신고테스트");
+		//new ReportVO(reportUser, typeSq, reportDt, reportCcSq, reportCt, reportCnt)
+		report01 = new ReportVO("ppikkuppikku", 30, "2022/01/24", 1, 1, "신고테스트");
 	}
 
 	@Test

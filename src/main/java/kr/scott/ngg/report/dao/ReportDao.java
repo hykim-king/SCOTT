@@ -19,7 +19,7 @@ public interface ReportDao {
 	 * @throws SQLException
 	 */
 	public int doInsert(ReportVO inVO);
-=
+
 
 	/**
 	 * 단건 삭제
@@ -56,6 +56,12 @@ public interface ReportDao {
 	 * @throws SQLException
 	 */
 	public List<ReportVO> doRetrieve(SearchVO inVO);
+	
+	// select all the list
+	public List<ReportVO> getAll();
+	
+	// get count
+	public int getCount();
 	
 	// delete all
 	public void deleteAll();

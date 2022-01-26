@@ -97,5 +97,40 @@ public class ReportDaoImpl implements ReportDao {
 		return outVO;
 	}
 
+	@Override
+	public int doDelete(ReportVO inVO) {
+		LOG.debug("dao) doDelete => param: "+inVO);
+		
+		String statement = NAMESPACE + ".doDelete";
+		LOG.debug("dao) doDelete => statement: "+statement);
+
+		int flag = this.sqlSessionTemplate.delete(statement, inVO);
+		LOG.debug("dao) doDelete => flag: "+flag);
+		
+		return flag;
+	}
+
+	@Override
+	public ReportVO doSelectOne(ReportVO inVO) {
+		LOG.debug("dao) doSelectOne => param: "+inVO);
+
+		String statement = NAMESPACE + ".doSelectOne";
+		LOG.debug("dao) doSelectOne => statement: "+statement);
+		
+		ReportVO outVO = this.sqlSessionTemplate.selectOne(statement, inVO);
+		LOG.debug("dao) doSelectOne => outVO: "+outVO);
+		
+		return outVO;
+	}
+
+	@Override
+	public void deleteAll() {
+		String statement = NAMESPACE + ".deleteAll";
+		LOG.debug("dao) deleteAll => statement: "+statement);
+
+		int flag = this.sqlSessionTemplate.delete(statement);
+		LOG.debug("dao) deleteAll => flag: "+flag);
+	}
+
 }//--class
 

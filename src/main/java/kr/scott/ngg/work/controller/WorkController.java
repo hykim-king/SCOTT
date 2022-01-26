@@ -72,7 +72,6 @@ public class WorkController {
 	@RequestMapping(value = "/doUpdate.do", method = RequestMethod.POST,
 			produces = "application/json;charset=UTF-8")
 	@ResponseBody
-	
 	public String doUpdate(WorkVO inVO) throws SQLException {
 		LOG.debug("========================");
 		LOG.debug("inVO: "+inVO);

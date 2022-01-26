@@ -5,7 +5,7 @@ import kr.scott.ngg.cmn.DTO;
 public class ReportVO extends DTO {
 	/** 신고 번호 */
 	private int reportSq;
-	/** 신고한 유저*/
+	/** 신고한 유저 */
 	private String reportUser;
 	/** 신고 타입 */
 	private int typeSq;
@@ -33,15 +33,14 @@ public class ReportVO extends DTO {
 		this.reportSt = 0;
 	}
 
-	public ReportVO( String reportUser,int typeSq, String reportDt, int reportCcSq, int reportCt, String reportCnt
-			) {
+	public ReportVO(String reportUser, int typeSq, String reportDt, int reportCcSq, int reportCt, String reportCnt) {
 		this.reportUser = reportUser;
 		this.typeSq = typeSq;
 		this.reportDt = reportDt;
 		this.reportCcSq = reportCcSq;
 		this.reportCt = reportCt;
 		this.reportCnt = reportCnt;
-		
+
 	}
 
 	public int getReportSq() {
@@ -63,7 +62,6 @@ public class ReportVO extends DTO {
 	public String getReportDt() {
 		return reportDt;
 	}
-
 
 	public int getReportCcSq() {
 		return reportCcSq;
@@ -112,5 +110,4 @@ public class ReportVO extends DTO {
 				+ ", reportSt=" + reportSt + ", toString()=" + super.toString() + "]";
 	}
 
-	
 }// --class
