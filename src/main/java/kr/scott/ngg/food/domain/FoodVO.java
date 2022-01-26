@@ -27,6 +27,10 @@ public class FoodVO extends DTO {
 		return foodSq;
 	}
 
+	public void setFoodSq(int foodSq) {
+		this.foodSq = foodSq;
+	}
+
 	public String getFoodName() {
 		return foodName;
 	}

@@ -48,8 +48,16 @@ public class ReportVO extends DTO {
 		return reportSq;
 	}
 
+	public void setReportSq(int reportSq) {
+		this.reportSq = reportSq;
+	}
+
 	public int getTypeSq() {
 		return typeSq;
+	}
+
+	public void setTypeSq(int typeSq) {
+		this.typeSq = typeSq;
 	}
 
 	public String getReportDt() {
@@ -59,6 +67,10 @@ public class ReportVO extends DTO {
 
 	public int getReportCcSq() {
 		return reportCcSq;
+	}
+
+	public void setReportCcSq(int reportCcSq) {
+		this.reportCcSq = reportCcSq;
 	}
 
 	public int getReportCt() {

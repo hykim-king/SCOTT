@@ -135,6 +135,32 @@
   </select>
 
 
+  <!--============ for ADMIN ============-->
+  <!-- 운동 게시물 조회수 TOP 10 -->
+  <select id="getTopTen" resultType="WorkRankVO">
+    SELECT r.work_sq "workSq",
+           r.work_title "workTitle", 
+           r.user_id "userId", 
+           r.work_read_cnt "workReadCnt", 
+           r.work_file "workFile", 
+           r.work_ct1 "workCt1", 
+           TO_CHAR(r.work_reg_dt, 'YYYY.MM.DD') "workRegDt",
+           r.rank "rank"
+    FROM (
+        SELECT work_sq,
+               work_title, 
+               user_id, 
+               work_read_cnt, 
+               work_file, 
+               work_ct1, 
+               work_reg_dt workRegDt,
+               ROW_NUMBER() OVER(ORDER BY work_read_cnt desc) rank
+        FROM work_t
+    ) r
+    WHERE rank <![CDATA[<= 10]]>
+  </select>
+  
+
   <!-- for JUnit Test -->
    <select id="idLike" parameterType="WorkVO" resultMap="workResultMap">
 	    SELECT

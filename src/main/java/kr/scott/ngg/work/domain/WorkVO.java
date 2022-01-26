@@ -128,9 +128,11 @@ public class WorkVO extends DTO {
 
 	@Override
 	public String toString() {
-		return "WorkVO [workSq="+workSq+",workTitle=" + workTitle + ", userId=" + userId + ", workContent=" + workContent
-				+ ", workReadCnt=" + workReadCnt + ", workFile=" + workFile + ", workCt1=" + workCt1 + ", workModDt="
-				+ workModDt + ", workRegDt=" + workRegDt + ", toString()=" + super.toString() + "]";
+
+		return "WorkVO [workSq=" + workSq + ", workTitle=" + workTitle + ", userId=" + userId + ", workContent="
+				+ workContent + ", workReadCnt=" + workReadCnt + ", workFile=" + workFile + ", workCt1=" + workCt1
+				+ ", workModDt=" + workModDt + ", workRegDt=" + workRegDt + ", toString()=" + super.toString() + "]";
+
 	}
 
 }// --class

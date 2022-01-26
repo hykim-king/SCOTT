@@ -20,6 +20,9 @@ public class ReportDaoImpl implements ReportDao {
 
 	final String NAMESPACE = "kr.scott.ngg.ReportMapper";
 
+	public ReportDaoImpl() {
+	}
+
 	@Override
 	public int doInsert(ReportVO inVO) {
 		LOG.debug("dao) doInsert => param: " + inVO);
@@ -48,15 +51,51 @@ public class ReportDaoImpl implements ReportDao {
 
 	@Override
 	public List<ReportVO> doRetrieve(SearchVO inVO) {
-		LOG.debug("dao) doRetrieve => param: " + inVO);
 
+		LOG.debug("dao) doRetrieve => param: "+inVO);
+		
 		String statement = NAMESPACE + ".doRetrieve";
-		LOG.debug("dao) doRetrieve => statement: " + statement);
-
+		LOG.debug("dao) doRetrieve => statement: "+statement);
+		
 		List<ReportVO> list = this.sqlSessionTemplate.selectList(statement, inVO);
-		LOG.debug("dao) doRetrieve => list: " + list);
-
+		LOG.debug("dao) doRetrieve => list: "+list);
+		
 		return list;
 	}
 
-}// --class
+	@Override
+	public List<ReportVO> getAll() {
+		String statement = NAMESPACE + ".getAll";
+		LOG.debug("dao) getAll => statement: "+statement);
+		
+		List<ReportVO> list = this.sqlSessionTemplate.selectList(statement);
+		LOG.debug("dao) getAll => list: "+list);
+		
+		return list;
+	}
+
+	@Override
+	public int getCount() {
+		String statement = NAMESPACE + ".getCount";
+		LOG.debug("dao) getCount => statement: "+statement);
+		
+		int flag = this.sqlSessionTemplate.selectOne(statement);
+		LOG.debug("dao) getCount => flag: "+flag);
+		
+		return flag;
+  }
+
+
+	@Override
+	public ReportVO getLastData() {
+		String statement = NAMESPACE + ".getLastData";
+		LOG.debug("dao) getLastData => statement: "+statement);
+		
+		ReportVO outVO = this.sqlSessionTemplate.selectOne(statement);
+		LOG.debug("dao) getLastData => outVO: "+outVO);
+		
+		return outVO;
+	}
+
+}//--class
+

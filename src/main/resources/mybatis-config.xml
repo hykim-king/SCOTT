@@ -7,6 +7,7 @@
     <typeAliases>
         <typeAlias type="kr.scott.ngg.user.domain.UserVO" alias="UserVO"/>
         <typeAlias type="kr.scott.ngg.work.domain.WorkVO" alias="WorkVO"/>
+        <typeAlias type="kr.scott.ngg.work.domain.WorkRankVO" alias="WorkRankVO"/>
         <typeAlias type="kr.scott.ngg.meal.domain.MealVO" alias="MealVO"/>
         <typeAlias type="kr.scott.ngg.food.domain.FoodVO" alias="FoodVO"/>
         <typeAlias type="kr.scott.ngg.commu.domain.CommuVO" alias="CommuVO"/>
@@ -14,5 +15,6 @@
         <typeAlias type="kr.scott.ngg.status.domain.StatusVO" alias="StatusVO"/>
         <typeAlias type="kr.scott.ngg.file.domain.FileVO" alias="FileVO"/>
         <typeAlias type="kr.scott.ngg.report.domain.ReportVO" alias="ReportVO"/>
+        <typeAlias type="kr.scott.ngg.cmn.SearchVO" alias="SearchVO"/>
     </typeAliases>
 </configuration>
