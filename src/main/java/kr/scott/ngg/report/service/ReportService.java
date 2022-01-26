@@ -8,6 +8,7 @@ import kr.scott.ngg.report.domain.ReportVO;
 
 public interface ReportService {
 
+
 	// --------------------- default functions
 	/**
 	 * 단건 등록
@@ -26,6 +27,7 @@ public interface ReportService {
 	 * @throws SQLException
 	 */
 	public int doDelete(ReportVO inVO) throws SQLException;
+
 
 	/**
 	 * 단건 수정
@@ -53,6 +55,4 @@ public interface ReportService {
 	 */
 	public List<ReportVO> doRetrieve(SearchVO inVO) throws SQLException;
 
-	
-	// --------------------- Report functions
 }

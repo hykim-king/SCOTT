@@ -6,6 +6,13 @@ import java.util.UUID;
 
 public class StringUtil {
 	
+	
+	
+	public static String getRenameFile(String format) {
+		return getFormatDate(format)+getUUID();
+	}
+	
+	
 	/**
 	 * 필수 입력 항목 null 체크 
 	 * 입력한 객체가 null이거나 ""일 경우 msgId: "30", msgContent: valueName은 필수 항목입니다. 반환

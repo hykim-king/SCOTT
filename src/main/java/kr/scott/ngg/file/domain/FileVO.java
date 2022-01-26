@@ -16,6 +16,8 @@ public class FileVO extends DTO {
 		// TODO Auto-generated constructor stub
 	}
 
+
+
 	public FileVO(int fileSq, String fileOName, String fileSName, String filePath) {
 		this.fileSq = fileSq;
 		this.fileOName = fileOName;
@@ -55,10 +57,14 @@ public class FileVO extends DTO {
 		this.filePath = filePath;
 	}
 
+
+
 	@Override
 	public String toString() {
-		return "FileVO [fileSq=" + fileSq + ", fileOName=" + fileOName + ", fileSName=" + fileSName + ", filePath="
-				+ filePath + ", toString()=" + super.toString() + "]";
+		return "FileVO [fileSq=" + fileSq + ", fileOName=" + fileOName + ", fileSName="
+				+ fileSName + ", filePath=" + filePath + ", toString()=" + super.toString() + "]";
 	}
+
+	
 
 }// --class

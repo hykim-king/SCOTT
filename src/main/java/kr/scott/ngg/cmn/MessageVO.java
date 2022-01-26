@@ -33,6 +33,7 @@ public class MessageVO extends DTO {
 
 	@Override
 	public String toString() {
+
 		return "MessageVO [msgId=" + msgId + ", msgContent=" + msgContent + ", toString()=" + super.toString() + "]";
 	}
 

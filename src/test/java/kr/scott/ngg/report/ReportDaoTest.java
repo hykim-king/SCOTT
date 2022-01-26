@@ -42,20 +42,13 @@ public class ReportDaoTest {
 		assertNotNull(context);
 		assertNotNull(rDao);
 		
-		report01 = new ReportVO(0, 
-								20, 
-								"", 
-								0, 
-								0, 
-								"신고 테스트", 
-								0);
+		report01 = new ReportVO(1,"2022/01/24",1,1,"신고테스트");
 	}
 
 	@Test
 	public void doInsert() {
 		LOG.debug("daoTest) doInsert()=====================");
 		
-		rDao.deleteAll();
 		
 		rDao.doInsert(report01);
 	}

@@ -1,5 +1,7 @@
 package kr.scott.ngg.report.dao;
 
+
+
 import java.sql.SQLException;
 import java.util.List;
 
@@ -17,6 +19,7 @@ public interface ReportDao {
 	 * @throws SQLException
 	 */
 	public int doInsert(ReportVO inVO);
+=
 
 	/**
 	 * 단건 삭제
@@ -26,6 +29,7 @@ public interface ReportDao {
 	 * @throws SQLException
 	 */
 	public int doDelete(ReportVO inVO);
+
 	
 	/**
 	 * 단건 수정
@@ -52,17 +56,11 @@ public interface ReportDao {
 	 * @throws SQLException
 	 */
 	public List<ReportVO> doRetrieve(SearchVO inVO);
-
-	// ----------------------------------------
-	// select all the list
-	public List<ReportVO> getAll();
-	
-	// get count
-	public int getCount();
 	
 	// delete all
 	public void deleteAll();
 	
 	// get last input data
 	public ReportVO getLastData();
+
 }
