@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.scott.ngg.SampleMapper">
+  
+  <!-- doRetreive 검색조건 -->
+  <!-- SearchDiv: column_name(value) -->
+  <sql id="searchCondition">
+      <where>
+          <choose>
+              <when test="searchDiv == '10' and searchWord != ''">
+                  report_ct LIKE '%' || #{searchWord} || '%'
+              </when>
+          </choose>
+      </where>
+  </sql>
+  
+  <!-- doRetrieve: 조회+검색,페이징 -->
+  <select id="doRetrieve" parameterType="SearchVO" resultType="inVO">
+  </select>
+
+  <!-- doSelectOne: 단건 조회 -->
+  <select id="doSelectOne" parameterType="inVO" resultType="inVO">
+  </select>
+
+  <!-- doUpdate: 수정 -->
+  <update id="doUpdate" parameterType="inVO">
+  </update>
+
+  <!-- doDelete: 삭제 -->
+  <delete id="doDelete" parameterType="inVO">
+  </delete>
+
+  <!-- doInsert: 삽입 -->
+  <insert id="doInsert" parameterType="inVO">
+  </insert>
+
+
+  <!--========= for JUnit Test =========-->
+  <!-- getAll: 전체 조회 -->
+  <select id="getAll" resultType="inVO">
+    SELECT *
+    FROM <!-- insert table name -->
+  </select>
+
+  <!-- getAll: 전체 개수 -->
+  <select id="getCount" resultType="int">
+    SELECT count(*) "cnt"
+    FROM <!-- insert table name -->
+  </select>
+
+  <!-- getAll: 전체 삭제 -->
+  <delete id="deleteAll">
+    DELETE FROM <!-- insert table name -->
+  </delete>
+
+
+
+</mapper>

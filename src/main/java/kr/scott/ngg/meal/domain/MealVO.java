@@ -37,6 +37,10 @@ public class MealVO extends DTO {
 		return mealSq;
 	}
 
+	public void setMealSq(int mealSq) {
+		this.mealSq = mealSq;
+	}
+
 	public String getUserId() {
 		return userId;
 	}
@@ -71,8 +75,8 @@ public class MealVO extends DTO {
 
 	@Override
 	public String toString() {
-		return "MealVO [userId=" + userId + ", mealContent=" + mealContent + ", mealRegDt=" + mealRegDt + ", mealModDt="
-				+ mealModDt + ", toString()=" + super.toString() + "]";
+		return "MealVO [mealSq=" + mealSq + ", userId=" + userId + ", mealContent=" + mealContent + ", mealRegDt="
+				+ mealRegDt + ", mealModDt=" + mealModDt + ", toString()=" + super.toString() + "]";
 	}
 
 }// --class

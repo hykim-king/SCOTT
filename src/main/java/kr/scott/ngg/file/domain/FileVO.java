@@ -16,11 +16,6 @@ public class FileVO extends DTO {
 		// TODO Auto-generated constructor stub
 	}
 
-	public FileVO(int num, int totalNum) {
-		super(num, totalNum);
-		// TODO Auto-generated constructor stub
-	}
-
 	public FileVO(int fileSq, String fileOName, String fileSName, String filePath) {
 		this.fileSq = fileSq;
 		this.fileOName = fileOName;
@@ -30,6 +25,10 @@ public class FileVO extends DTO {
 
 	public int getFileSq() {
 		return fileSq;
+	}
+
+	public void setFileSq(int fileSq) {
+		this.fileSq = fileSq;
 	}
 
 	public String getFileOName() {

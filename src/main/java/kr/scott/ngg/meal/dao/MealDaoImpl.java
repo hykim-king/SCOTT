@@ -1,4 +1,4 @@
-package kr.scott.ngg.report.dao;
+package kr.scott.ngg.meal.dao;
 
 import java.util.List;
 
@@ -9,22 +9,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import kr.scott.ngg.cmn.SearchVO;
-import kr.scott.ngg.report.domain.ReportVO;
+import kr.scott.ngg.meal.domain.MealVO;
 
-@Repository("reportDao")
-public class ReportDaoImpl implements ReportDao {
+@Repository("mealDao")
+public class MealDaoImpl implements MealDao {
 	final Logger LOG = LogManager.getLogger(getClass());
 	
 	@Autowired
 	private SqlSessionTemplate sqlSessionTemplate;
 	
-	final String NAMESPACE = "kr.scott.ngg.ReportMapper";
+	final String NAMESPACE = "kr.scott.ngg.MealMapper";
 
-	public ReportDaoImpl() {
+	public MealDaoImpl() {
 	}
 
 	@Override
-	public int doInsert(ReportVO inVO) {
+	public int doInsert(MealVO inVO) {
 		LOG.debug("dao) doInsert => param: "+inVO);
 		
 		String statement = NAMESPACE + ".doInsert";
@@ -37,7 +37,7 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public int doDelete(ReportVO inVO) {
+	public int doDelete(MealVO inVO) {
 		LOG.debug("dao) doDelete => param: "+inVO);
 		
 		String statement = NAMESPACE + ".doDelete";
@@ -50,7 +50,7 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public int doUpdate(ReportVO inVO) {
+	public int doUpdate(MealVO inVO) {
 		LOG.debug("dao) doUpdate => param: "+inVO);
 		
 		String statement = NAMESPACE + ".doUpdate";
@@ -63,37 +63,39 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public ReportVO doSelectOne(ReportVO inVO) {
+	public MealVO doSelectOne(MealVO inVO) {
 		LOG.debug("dao) doSelectOne => param: "+inVO);
 
 		String statement = NAMESPACE + ".doSelectOne";
 		LOG.debug("dao) doSelectOne => statement: "+statement);
 		
-		ReportVO outVO = this.sqlSessionTemplate.selectOne(statement, inVO);
+		MealVO outVO = this.sqlSessionTemplate.selectOne(statement, inVO);
 		LOG.debug("dao) doSelectOne => outVO: "+outVO);
 		
 		return outVO;
 	}
 
 	@Override
-	public List<ReportVO> doRetrieve(SearchVO inVO) {
+	public List<MealVO> doRetrieve(SearchVO inVO) {
 		LOG.debug("dao) doRetrieve => param: "+inVO);
 		
 		String statement = NAMESPACE + ".doRetrieve";
 		LOG.debug("dao) doRetrieve => statement: "+statement);
 		
-		List<ReportVO> list = this.sqlSessionTemplate.selectList(statement, inVO);
+		List<MealVO> list = this.sqlSessionTemplate.selectList(statement, inVO);
 		LOG.debug("dao) doRetrieve => list: "+list);
 		
 		return list;
 	}
 
+	// -------------------------------------------------------------------
+	
 	@Override
-	public List<ReportVO> getAll() {
+	public List<MealVO> getAll() {
 		String statement = NAMESPACE + ".getAll";
 		LOG.debug("dao) getAll => statement: "+statement);
 		
-		List<ReportVO> list = this.sqlSessionTemplate.selectList(statement);
+		List<MealVO> list = this.sqlSessionTemplate.selectList(statement);
 		LOG.debug("dao) getAll => list: "+list);
 		
 		return list;
@@ -120,14 +122,14 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 	@Override
-	public ReportVO getLastData() {
+	public MealVO getLastData() {
 		String statement = NAMESPACE + ".getLastData";
 		LOG.debug("dao) getLastData => statement: "+statement);
 		
-		ReportVO outVO = this.sqlSessionTemplate.selectOne(statement);
+		MealVO outVO = this.sqlSessionTemplate.selectOne(statement);
 		LOG.debug("dao) getLastData => outVO: "+outVO);
 		
 		return outVO;
 	}
 
-}//--class
+}
