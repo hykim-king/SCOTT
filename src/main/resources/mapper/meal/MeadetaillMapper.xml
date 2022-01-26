@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.scott.ngg.MealdetailMapper">
+  
+  <select id="doRetrieve" parameterType="MealVO" resultType="MealdetailVO">
+		SELECT mealdetail_sq "mealdetailSq", 
+		       meal_sq "mealSq", 
+		       meal_div "mealDiv",
+		       food_name "foodName", 
+		       food_kcal "foodKcal", 
+		       food_ct "foodCt" 
+		FROM mealdetail_t
+		WHERE meal_sq = #{mealSq}
+  </select>
+  
+  <!-- doSelectOne: 단건 조회 -->
+  <select id="doSelectOne" parameterType="MealdetailVO" resultType="MealdetailVO">
+		SELECT mealdetail_sq "mealdetailSq", 
+		       meal_sq "mealSq", 
+		       meal_div "mealDiv",  
+		       food_name "foodName", 
+		       food_kcal "foodKcal", 
+		       food_ct "foodCt" 
+		FROM mealdetail_t
+		WHERE mealdetail_sq = #{mealdetailSq}
+  </select>
+
+  <!-- doUpdate: 수정 -->
+  <update id="doUpdate" parameterType="MealdetailVO">
+		UPDATE mealdetail_t
+		SET meal_div = #{mealDiv}, 
+				food_name = #{foodName},
+				food_kcal = #{foodKcal}, 
+				food_ct = #{foodCt} 
+		WHERE mealdetail_sq = #{mealdetailSq}
+  </update>
+
+  <!-- deleteByMealSq: 삭제 -->
+  <delete id="deleteByMealSq" parameterType="MealVO">
+		DELETE FROM mealdetail_t
+		WHERE meal_sq = #{mealSq}
+  </delete>
+
+  <!-- doDelete: 삭제 -->
+  <delete id="doDelete" parameterType="MealdetailVO">
+		DELETE FROM mealdetail_t
+		WHERE mealdetail_sq = #{mealdetailSq}
+  </delete>
+
+  <!-- doInsert: 삽입 -->
+  <insert id="doInsert" parameterType="MealdetailVO">
+		INSERT INTO mealdetail_t (
+		    meal_sq, 
+		    meal_div,  
+		    food_name, 
+		    food_kcal, 
+		    food_ct    
+		) VALUES (
+		    meal_seq.currval,
+		    #{mealDiv},
+		    #{foodName},
+		    #{foodKcal},
+		    #{foodCt}
+		)
+  </insert>
+
+
+  <!--========= for JUnit Test =========-->
+  <!-- getAll: 전체 조회 -->
+  <select id="getAll" resultType="MealdetailVO">
+    SELECT *
+    FROM mealdetail_t
+  </select>
+
+  <!-- getCount: 전체 개수 -->
+  <select id="getCount" resultType="int">
+    SELECT count(*) "cnt"
+    FROM mealdetail_t
+  </select>
+
+  <!-- deleteAll: 전체 삭제 -->
+  <delete id="deleteAll">
+    DELETE FROM mealdetail_t
+  </delete>
+
+  <!-- getLastData: 마지막 입력된 값 가져오기 -->
+  <select id="getLastData" resultType="MealdetailVO">
+		SELECT mealdetail_sq "mealdetailSq", 
+		       meal_sq "mealSq", 
+		       meal_div "mealDiv",  
+		       food_name "foodName", 
+		       food_kcal "foodKcal", 
+		       food_ct "foodCt" 
+		FROM mealdetail_t
+		WHERE mealdetail_sq = (
+		    SELECT MAX(mealdetail_sq) FROM mealdetail_t
+		)
+  </select>
+
+
+</mapper>

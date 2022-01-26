@@ -37,7 +37,7 @@ public class StatusController {
 
 
 	/* ---------------------------- LOGIC ---------------------------- */
-	@RequestMapping(value="/doRetrieve", method=RequestMethod.GET)
+	@RequestMapping(value="/doRetrieve.do", method=RequestMethod.GET)
 	public String doRetrieve(SearchVO inVO) throws SQLException {
 		LOG.debug("ctrl) doRetrieve() ===================== ");
 		LOG.debug("ctrl) doRetrieve => param: "+inVO);
@@ -48,7 +48,7 @@ public class StatusController {
 		return new Gson().toJson(list);
 	}
 	
-	@RequestMapping(value="/doSelectOne", method=RequestMethod.GET)
+	@RequestMapping(value="/doSelectOne.do", method=RequestMethod.GET)
 	public String doSelectOne(StatusVO inVO) throws SQLException {
 		LOG.debug("ctrl) doUpdate() ===================== ");
 		LOG.debug("ctrl) doUpdate => param: "+inVO);
@@ -60,7 +60,7 @@ public class StatusController {
 		return new Gson().toJson(outVO);
 	}
 	
-	@RequestMapping(value="/doUpdate", method=RequestMethod.PUT)
+	@RequestMapping(value="/doUpdate.do", method=RequestMethod.PUT)
 	public String doUpdate(StatusVO inVO) throws SQLException {
 		LOG.debug("ctrl) doUpdate() ===================== ");
 		LOG.debug("ctrl) doUpdate => param: "+inVO);
@@ -77,6 +77,7 @@ public class StatusController {
 		return new Gson().toJson(msgVO);
 	}
 	
+	@RequestMapping(value="/doDelete.do", method=RequestMethod.DELETE)
 	public String doDelete(StatusVO inVO) throws SQLException {
 		LOG.debug("ctrl) doDelete() ===================== ");
 		LOG.debug("ctrl) doDelete => param: "+inVO);
@@ -91,7 +92,7 @@ public class StatusController {
 		return new Gson().toJson(msgVO);
 	}
 	
-	@RequestMapping(value="/doInsert", method=RequestMethod.POST)
+	@RequestMapping(value="/doInsert.do", method=RequestMethod.POST)
 	public String doInsert(StatusVO inVO) throws SQLException {
 		LOG.debug("ctrl) doInsert() ===================== ");
 		LOG.debug("ctrl) doInsert => param: "+inVO);

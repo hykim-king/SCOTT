@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{user/layout/base}">
+
+<head>
+<style>
+    input[type="text"], select, option {
+      outline: none;
+      font-size: 14px;
+      padding: 6px 9px;
+    }
+    input[type="text"] {
+      border: none;
+      border-bottom: 1px solid black;
+    }
+    .datepicker {
+	    border: none;
+	    text-align: center;
+	    font-size: 1.7rem;
+	    padding: 6px;
+	    outline: none;
+	    cursor: pointer;
+    }
+    #addBtn,
+    .delBtn  {
+      cursor: pointer;
+    }
+    .fDivBadge {
+	    border: 2px solid pink;
+	    border-radius: 10px;
+	    font-size: 9px;
+	    padding: 1px 2px;
+    }
+</style>
+
+<script>
+$(document).ready(function(){
+		// Date Picker
+		$(".datepicker").datepicker({
+			autoHide: false,
+			days: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
+			daysShort: ['일', '월', '화', '수', '목', '금', '토'],
+			daysMin: ['일', '월', '화', '수', '목', '금', '토'],
+			months: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+			monthsShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+			weekStart: 1,
+			yearFirst: true,
+			yearSuffix: '년',
+			format: 'yyyy.mm.dd'
+		});
+	 
+		
+	 // 식단
+	 $(".delBtn").on("click", function(){
+	    let mealSq = $(this).find("input.data-sq").val();
+	    let dateVal = $(this).find(".mealDate").text();
+		  
+	    let url = "[[@{/meal/api/meal/}]]"+mealSq;
+	    let params = {};
+	    let method = "DELETE";
+	    let async = true;
+	          
+	    console.log(url);
+	    // if(confirm("식단을 삭제하시겠습니까?") == false) return;
+	    // ajaxHelper.callAjax(url, params, method, async, function(data){});
+	 });
+	 
+	 $("#mealSaveBtn").on("click", function(){
+		  // hidden으로 박아놓은 정보들 가져와서 map으로 만들어서 보내야함..
+		  
+		  // Map<String, Object> reqMap / MealVO mealVO / List<MealdetailVO> mealdetailVO
+		  let reqMap = new Map();
+		  reqMap.set('mealVO', 1);
+		  reqMap.set('mealdetailVO', 1);
+		  
+		  let mealdetails = $(".foodList");
+		  
+		  let meal = {
+				  "mealSq": mealSq,
+				  "mealDate": mealDate,
+				  "userId": userId,
+				  "mealKcal": mealKcal,
+				  "mealDivs": mealDivs,
+		  };
+		 
+      let url = "[[@{/meal/api/meal/}]]";
+      let params = {};
+      let method = "POST";
+      let async = true;
+      console.log(url);
+	 });
+	 
+	 // 식단 상세
+	 const foodDivNames = ["탄", "단", "지", "기"];
+	 
+	 $("#foodAddBtn").on("click", function(){
+			let foodDivs = $(".foodDiv");
+			let mealDiv = $("#mealDiv").val();
+			let foodName = $("#foodName").val();
+			let foodKcal = $("#foodKcal").val();
+			let foodCt = $("#foodCt").val();
+			let totalKcal = $("#totalKcal").text();
+			totalKcal = Number(totalKcal) + Number(foodKcal);
+			
+			$("#totalKcal").text(totalKcal.toLocaleString()).attr("data-kcal", totalKcal);
+		 
+			let data = {
+				 "mealdetailSq":0,
+				 "mealSq":0,
+				 "mealDiv":Number(mealDiv),
+				 "foodSq":0,
+				 "foodName":foodName,
+				 "foodKcal":Number(foodKcal),
+				 "foodCt":Number(foodCt),
+			};
+		 
+			//console.log(data);
+			
+			drawLine(foodDivs, data);
+			resetFunc();		 
+	 });
+	 
+	 // 음식 상세
+	 $(".meal-content").on("click", function(){
+			let mealSq = $(this).find("input.data-sq").val();
+			let dateVal = $(this).find(".mealDate").text();
+			 
+			let url = "[[@{/meal/api/meal/}]]"+mealSq;
+	    let params = {};
+	    let method = "GET";
+	    let async = true;
+		        
+      ajaxHelper.callAjax(url, params, method, async, function(data){
+    	  let totalKcal = 0;
+   	    let foodDivs = $(".foodDiv");
+   	    foodDivs.empty();
+   	    $(".datepicker").val(dateVal);
+   	    
+   	    $.each(data, function(idx, item){
+   	       console.log(item);
+   	       totalKcal += item.foodKcal;
+   	        
+		   	   drawLine(foodDivs, item);
+   	     });
+   	    
+   	    $("#totalKcal").text(totalKcal.toLocaleString()).attr("data-kcal", totalKcal);
+		 });
+      
+	 });//--meal-content.click
+	 
+	 
+	 /* ----------------- FUNCTIONS -------------*/
+	 function resetFunc(){
+		  $("#mealDiv").val(0);
+		  $("#foodName").val("");
+		  $("#foodKcal").val("");
+		  $("#foodCt").val(0);
+		  $(":focus").blur();
+	 }
+	 
+	 // li 한줄. list: 추가될 목록 그룹, data: mealdetailVO
+	 function drawLine(list, data){
+		  let liStr = '<span class="ms-1 me-1">'+data.foodName
+				         +'<span clss="foodKcal"> '+data.foodKcal.toLocaleString()+'kcal</span></span>'
+				         +'<sup class="fDivBadge me-2">'+foodDivNames[data.foodCt]+'</sup>'
+				         +'<i class="bi bi-backspace mdDelBtn"></i>';
+            
+			let hdVal = document.createElement("input");
+			hdVal.setAttribute("type", "hidden");
+			hdVal.setAttribute("class", "foodList");
+			hdVal.value = JSON.stringify(data);
+			 
+			let temp = document.createElement("li");
+			temp.innerHTML = liStr;
+			
+			list[data.mealDiv].appendChild(temp);
+			list[data.mealDiv].appendChild(hdVal);
+	 }
+	 
+});
+</script>
+</head>
+
+<div layout:fragment="content" id="main" class="main">
+  
+  <!-- User ActKcal -->
+  <div class="row col-9 m-auto bg bg-light p-3">
+    <span th:text="${session.user.userNn}+'님의 활동칼로리'" style="font-size:13px;">일일대사량</span>
+    <h2 class="text-center" th:text="${#numbers.formatInteger(session.user.userActkcal,3,'COMMA')}+' kcal'"></h2>
+    <div>
+      <ul class="list-unstyled d-flex flex-row justify-content-evenly" style="font-size:13px;">
+      	<li>탄수화물 50%</li>
+      	<li>단백질30%</li>
+      	<li>지방20%</li>
+      </ul>      
+    </div>
+  </div><!-- End User ActKcal -->
+  
+  <div class="row col-9 mx-auto">
+    <!-- Meal Nav -->
+    <nav class="d-flex justify-content-between">
+      <!-- Number per Page -->
+      <div class="d-flex flex-row align-items-end">
+        <select id="pageSize" class="me-2">
+          <option value="10">10개</option>
+          <option value="20">20개</option>
+          <option value="50">50개</option>
+          <option value="100">100개</option>
+        </select>
+        <span th:text="${mealList}!=null? '총 '+${mealList[0].num}+'개': '총 0개'">총 글 수</span>
+      </div><!-- End Nuumber per Page -->
+      
+      <div>
+	      <i class="bi bi-plus-lg fs-3 fw-bolder" id="addBtn" data-bs-toggle="modal" data-bs-target="#inputModal"></i>
+      </div>
+    </nav><!-- End Meal Nav -->
+    
+    <!-- Meal Area -->
+    <div>
+      <!-- Meal Container -->
+      <div class="meal-container">
+      
+	      <!-- Meal Content -> 반복될 아이템 -->
+	      <div th:each="meal : ${mealList}" class="meal-content bg bg-info bg-opacity-10 my-2 px-4 py-3 rounded-3">
+	        <input type="hidden" class="data-sq" th:value="${meal.mealSq}">
+	      
+	        <!-- Meal Content Nav -->
+	        <div class="d-flex justify-content-between align-items-center">
+	          <div>
+	            <b th:text="${meal.mealDate}" class="mealDate">식단날짜</b>
+	          </div>
+          
+	          <div>
+			        <a class="bi bi-trash fs-4 fw-bold delBtn"></a>          
+	          </div>
+	        </div><!-- End Meal Content Nav -->
+	        
+	        <div class="d-flex justify-content-center flex-shrink align-items-center">
+	          <div class="d-flex align-items-center justify-content-center flex-fill">
+		          <p th:text="${#numbers.formatInteger(meal.mealKcal,3,'COMMA')}+'kcal'" class="fs-4 me-1">총칼로리</p>
+		          
+		          <i class="bi" th:text="${#numbers.formatInteger(meal.mealKcal-session.user.userActkcal,3,'COMMA')}+'kcal'" 
+		            th:classappend="${meal.mealKcal-session.user.userActkcal}>0? bi-caret-up-fill: bi-caret-down-fill" style="font-size:13px;"></i>
+	          </div>
+	          
+            <ul class="list-unstyled d-flex flex-row justify-content-evenly m-0 flex-fill" style="font-size:13px;">
+              <li th:if="${#strings.contains(meal.mealDivs, '0')}">아침</li>
+              <li th:if="${#strings.contains(meal.mealDivs, '1')}">점심</li>
+              <li th:if="${#strings.contains(meal.mealDivs, '2')}">저녁</li>
+              <li th:if="${#strings.contains(meal.mealDivs, '3')}">간식</li> 
+            </ul>
+            
+	        </div>
+	        
+	      </div><!-- End Meal Content -->
+    
+      </div><!-- End Meal Container -->
+     
+      <!-- Paging -->
+      <div></div><!-- Paging -->
+      
+    </div><!-- End Meal Area -->
+    
+    <!-- Input Modal -->
+    <!-- modal fade -->
+    <div class="" id="inputModal" tabindex="-1" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title">식단</h5>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      
+					<div class="modal-body d-flex flex-column mx-auto">
+					  <div class="text-center">
+					    <div>
+					      <input class="datepicker">
+					    </div>
+					    <select id="mealDiv">
+					      <option value="0">아침</option>
+					      <option value="1">점심</option>
+					      <option value="2">저녁</option>
+					      <option value="3">간식</option>
+					    </select>
+					  </div>
+					  
+					  <div class="text-center my-2">
+					    <select id="foodCt">
+					      <option value="0">탄수화물</option>
+					      <option value="1">단백질</option>
+					      <option value="2">지방</option>
+					      <option value="3">기타</option>
+					    </select>
+					    
+					    <input type="text" id="foodName" placeholder="이름" maxlength="20" required class="col-4"/>
+					    <input type="text" id="foodKcal" placeholder="칼로리" maxlength="5" required class="col-2 me-1"/>
+					    
+					    <button class="btn btn-primary" id="foodAddBtn">추가</button>
+					  </div>
+					  
+					  <!-- Food List -->
+					  <div class="row">
+					    <h6 class="text-center mt-4 mb-2">총 칼로리 <span id="totalKcal" data-kcal="0"></span>kcal</h6>
+					    <ul class="overflow-auto list-unstyled" id="foodList">
+					    
+					      <li class="d-flex justify-content-between align-items-center my-2">
+					        <span class="col-3 text-center">아침</span>
+					        <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
+					        </ul>
+					      </li>
+					      
+					      <li class="d-flex justify-content-between align-items-center my-3">
+					        <span class="col-3 text-center">점심</span>
+					        <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
+					        </ul>
+					      </li>
+					      
+					      <li class="d-flex justify-content-between align-items-center my-3">
+					        <span class="col-3 text-center">저녁</span>
+					        <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
+					        </ul>
+					      </li>
+					      
+					      <li class="d-flex justify-content-between align-items-center my-3">
+					        <span class="col-3 text-center">간식</span>
+					        <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
+					        </ul>
+					      </li>
+					      
+					    </ul>
+					  </div><!-- End Food List -->
+					  
+					</div><!-- End Input Modal -->
+		      
+		      <div class="modal-footer justify-content-center">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+		        <button type="button" id="mealSaveBtn" class="btn btn-primary">저장</button>
+		      </div>
+		      
+		    </div>
+		  </div>
+		</div>
+    
+    
+    
+  </div>
+  
+</div>
+
+
+</html>
