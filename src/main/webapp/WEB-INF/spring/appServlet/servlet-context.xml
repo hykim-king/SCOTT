@@ -23,43 +23,47 @@
 	<beans:bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
 		<beans:property name="prefix" value="/WEB-INF/views/" />
 		<beans:property name="suffix" value=".jsp" />
-		<beans:property name="order" value="1" />
+		<beans:property name="order" value="2" />
 	</beans:bean>
-
+	
+	<!-- file/ DownloadView -->
+	<beans:bean id="downloadView" class="kr.scott.ngg.cmn.DownloadView"/>
 
 	<!-- Thymeleaf Configuration -->
 	<!-- <beans:bean id="templateResolver" class="org.thymeleaf.templateresolver.ServletContextTemplateResolver"> -->
-	<beans:bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver">
-		<beans:property name="prefix" value="/WEB-INF/views/" />
-		<beans:property name="suffix" value=".html" />
-		<beans:property name="templateMode" value="HTML5" />
-		<beans:property name="cacheable" value="false" />
-		<beans:property name="characterEncoding" value="UTF-8" />
-	</beans:bean>
+<!-- 	<beans:bean id="templateResolver" class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver"> -->
+<!-- 		<beans:property name="prefix" value="/WEB-INF/views/" /> -->
+<!-- 		<beans:property name="suffix" value=".html" /> -->
+<!-- 		<beans:property name="templateMode" value="HTML5" /> -->
+<!-- 		<beans:property name="cacheable" value="false" /> -->
+<!-- 		<beans:property name="characterEncoding" value="UTF-8" /> -->
+<!-- 	</beans:bean> -->
 
-	<beans:bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
-		<beans:property name="templateResolver" ref="templateResolver" />
-		<beans:property name="additionalDialects">
-			<beans:set>
-				<beans:bean class="nz.net.ultraq.thymeleaf.LayoutDialect" />
-			</beans:set>
-		</beans:property>
+<!-- 	<beans:bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine"> -->
+<!-- 		<beans:property name="templateResolver" ref="templateResolver" /> -->
+<!-- 		<beans:property name="additionalDialects"> -->
+<!-- 			<beans:set> -->
+<!-- 				<beans:bean class="nz.net.ultraq.thymeleaf.LayoutDialect" /> -->
+<!-- 			</beans:set> -->
+<!-- 		</beans:property> -->
+<!-- 	</beans:bean> -->
 
-	</beans:bean>
-
-	<beans:bean class="org.thymeleaf.spring5.view.ThymeleafViewResolver">
-		<beans:property name="templateEngine" ref="templateEngine" />
-		<beans:property name="characterEncoding" value="UTF-8" />
-		<beans:property name="contentType" value="text/html; charset=UTF-8" />
-		<beans:property name="order" value="0" />
-	</beans:bean>
+<!-- 	<beans:bean class="org.thymeleaf.spring5.view.ThymeleafViewResolver"> -->
+<!-- 		<beans:property name="templateEngine" ref="templateEngine" /> -->
+<!-- 		<beans:property name="characterEncoding" value="UTF-8" /> -->
+<!-- 		<beans:property name="contentType" value="text/html; charset=UTF-8" /> -->
+<!-- 		<beans:property name="order" value="0" /> -->
+<!-- 	</beans:bean> -->
 
 	<!-- <beans:bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer"> 
 		<beans:property name="location" value="/resources/config/application.config" 
 		/> <beans:property name="fileEncoding" value="UTF-8" /> </beans:bean> -->
 	<!-- End Thymeleaf Configuration -->
 
-
+	<beans:bean class="org.springframework.web.servlet.view.BeanNameViewResolver">
+		<beans:property name="order" value="1"></beans:property>
+	</beans:bean>
+	
 	<context:component-scan base-package="kr.scott.ngg" />
 
 

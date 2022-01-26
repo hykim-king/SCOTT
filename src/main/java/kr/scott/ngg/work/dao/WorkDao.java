@@ -21,7 +21,10 @@ public interface WorkDao {
 	
 	// select list with paging and searching
 	public List<WorkVO> doRetrieve(SearchVO inVO);
-
+	
+	// readCnt increase
+	public int doReadCnt(WorkVO inVO);
+	
 	// ----------------------------------------
 	// select all the list
 	public List<WorkVO> getAll();
@@ -31,4 +34,12 @@ public interface WorkDao {
 	
 	// delete all
 	public void deleteAll();
+	
+	//id selectone
+	public WorkVO idLike(WorkVO inVO);
+	
+	//id update
+	public int idUpdate(WorkVO inVO);
+	
+	
 }

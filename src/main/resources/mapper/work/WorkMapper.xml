@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.scott.ngg.WorkMapper">
-
+<mapper namespace="kr.scott.ngg.work">
+	
+  <resultMap type="WorkVO" id="workResultMap">
+   
+  	<result property="workSq" column="work_sq"/>
+  	<result property="workTitle" column="work_title"/>
+  	<result property="userId" column="user_id"/>
+  	<result property="workContent" column="work_content"/>
+  	<result property="workReadCnt" column="work_read_cnt"/>
+  	<result property="workFile" column="work_file"/>
+  	<result property="workCt1" column="work_ct1"/>
+  	<result property="workModDt" column="work_mod_dt"/>
+  	<result property="workRegDt" column="work_reg_dt"/>
+  </resultMap>
+	
   <insert id="doInsert" parameterType="WorkVO">
 		INSERT INTO work_t (
 		    work_title, 
@@ -28,8 +41,9 @@
     DELETE FROM work_t
     WHERE work_sq = #{workSq}
   </delete>
-  
+ 
   <update id="doUpdate"  parameterType="WorkVO">
+		
 		UPDATE work_t
 		SET work_title = #{workTitle}, 
 		    user_id = #{userId}, 
@@ -39,14 +53,85 @@
 		    work_mod_dt = SYSDATE
 		WHERE work_sq = #{workSq}
   </update>  
+ <update id="doReadCnt" parameterType="WorkVO" >
+	  	UPDATE work_t
+	  	SET work_read_cnt = NVL(work_read_cnt,0)+1 
+	  	WHERE work_sq = #{workSq}
+  </update> 
   
-  <select id="doSelectOne" parameterType="WorkVO" resultType="WorkVO">
-    SELECT 
-    FROM work_t
-    WHERE work_sq = #{workSq}
+  <select id="doSelectOne" parameterType="WorkVO" resultMap="workResultMap">
+	    SELECT
+		    work_sq,
+		    work_title,
+		    user_id,
+		    work_content,
+		    work_read_cnt,
+		    work_file,
+		    work_ct1,
+		    TO_CHAR(work_reg_dt,'yyyy/mm/dd hh24:mi:ss') work_reg_dt,
+		    work_mod_dt
+		FROM work_t
+		WHERE work_sq = #{workSq}
   </select>
   
+  	<sql id="orderCondition">
+    <choose>
+	      <when test="orderDiv != '' and orderDir != ''">
+	          ORDER BY ${orderDiv} ${orderDir}
+	      </when>
+	      <otherwise>
+	          ORDER BY #{default_column} DESC 
+	      </otherwise>
+    </choose>
+  </sql>
+  	
+  	<sql id="searchCondition">
+		<!-- work_ct(0),work_ct(1), work_ct(2)  -->
+		<!-- 10: 제목 , 20: 내용  -->
+		<where>
+			<choose>
+				<when test=" '10' == searchDiv and '' != searchWord ">
+					work_title LIKE '%'||#{searchWord}||'%'
+				</when>
+
+				<when test=" '20' == searchDiv and '' != searchWord  ">
+					work_content LIKE '%'||#{searchWord}||'%'
+				</when>
+			</choose>
+		</where>
+	</sql>
   <select id="doRetrieve" parameterType="WorkVO" resultType="WorkVO">
+  	SELECT A.*, B.*
+    FROM(
+		 SELECT tt1.rnum AS NUM, 
+				tt1.work_sq AS workSq,
+				tt1.work_title AS workTitle,
+				tt1.work_content AS workContent,
+				tt1.work_read_cnt AS workReadCent,
+				tt1.work_ct1 AS workCt1,
+				DECODE(TO_CHAR(SYSDATE,'YYYYMMDD')
+				,TO_CHAR(tt1.work_reg_dt,'YYYY/MM/DD')
+				,TO_CHAR(tt1.work_reg_dt,'HH24:MI')
+				,TO_CHAR(tt1.work_reg_dt,'YYYY/MM/DD')) AS workRegDt 
+		  FROM (
+				SELECT ROWNUM rnum, t1.*
+				FROM (
+				SELECT *
+				FROM work_t
+				<include refid="searchCondition" />
+				ORDER BY work_reg_dt desc
+				)t1
+		)tt1
+		WHERE rnum BETWEEN (#{pageSize}
+		*(#{pageNum}-1)+1) AND #{pageSize}*
+		(#{pageNum}-1) + #{pageSize}
+		)A
+		CROSS JOIN
+		(
+		select COUNT(*) totalNum
+		FROM work_t
+		<include refid="searchCondition" />
+		)B
   </select>
 
 
@@ -77,6 +162,30 @@
   
 
   <!-- for JUnit Test -->
+   <select id="idLike" parameterType="WorkVO" resultMap="workResultMap">
+	    SELECT
+	    	work_sq,
+		    work_title,
+		    user_id,
+		    work_content,
+		    work_read_cnt,
+		    work_file,
+		    work_ct1,
+		    TO_CHAR(work_reg_dt,'yyyy/mm/dd hh24:mi:ss') work_reg_dt,
+		    work_mod_dt
+		FROM work_t
+		WHERE user_id = #{userId}
+  </select>
+  <update id="idUpdate"  parameterType="WorkVO">
+		UPDATE work_t
+		SET work_title = #{workTitle}, 
+		    user_id = #{userId}, 
+		    work_content = #{workContent}, 
+		    work_file = #{workFile}, 
+		    work_ct1 = #{workCt1}, 
+		    work_mod_dt = SYSDATE
+		WHERE user_id = #{userId}
+  </update>  
   <select id="getAll" resultType="WorkVO">
     SELECT *
     FROM work_t

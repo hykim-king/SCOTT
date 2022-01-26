@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{admin/layout/base}">
+
+<head></head>
+
+<div layout:fragment="content" id="main" class="main">
+
+  <!-- Page Title -->
+  <div class="pagetitle">
+    <h1>User</h1>
+    <nav>
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.html">User</a></li>
+        <li class="breadcrumb-item active">list</li>
+      </ol>
+    </nav>
+  </div><!-- End Page Title -->
+
+  <!-- ======= Real Content ======= -->
+  <section class="section">
+  
+    <!-- Search -->
+    <div class="row">
+      <!-- row수, 검색구분, 검색어, 버튼  & 기간 검색 -->
+	    <div class="search-bar">
+	      <form class="search-form d-flex align-items-center" method="POST" action="#">
+	      
+	       <!-- Number per Page -->
+	       <select name="pageSize" id="pageSize" class="form-control">
+	       	<option value="10">10개</option>
+	       	<option value="20">20개</option>
+	       	<option value="50">50개</option>
+	       	<option value="100">100개</option>
+	       </select> 씩 보기
+
+	       <!-- Search Div -->
+	       <select name="searchDiv" id="searchDiv" class="form-control">
+	       	<option value="">전체</option>
+	       	<option value="10">아이디</option>
+	       	<option value="20">닉네임</option>
+	       	<option value="30">이메일</option>
+	       </select>
+
+	       <!-- Search Word --> 
+	       <input type="text" name="searchWord" id="searchWord" placeholder="검색어" title="검색어를 입력하세요" class="form-control">
+
+	       <!-- Search Button -->
+	       <button type="submit" title="Search" id="searchBtn"><i class="bi bi-search"></i></button>
+
+	       <select name="searchDiv" id="searchDiv" class="form-control">
+	       	<option value="">전체</option>
+	       	<option value="40">포인트</option>
+	       	<option value="50">가입일</option>
+	       	<option value="60">최근 접속일</option>
+	       </select>
+	       
+	       <!-- Search Range -->
+	       <input type="text" name="searchRangeMin" id="searchRangeMin" placeholder="최소" title="검색 범위를 입력하세요" class="form-control">
+	       <input type="text" name="searchRangeMax" id="searchRangeMax" placeholder="최대" title="검색 범위를 입력하세요" class="form-control">
+	       
+	       <!-- Search Button -->
+	       <button type="submit" title="Search" id="searchBtn"><i class="bi bi-search"></i></button>
+	       
+	       
+	      </form>
+	    </div><!-- End Search Bar -->
+    
+    </div><!-- End Search -->
+  
+    <div class="row">
+	    <table class="table table-hover">
+	      <thead>
+	      	<tr class="text-center">
+	      		<th></th>
+	      		<th>아이디</th>
+	      		<th>닉네임</th>
+	      		<th>이메일</th>
+	      		<th>성별</th>
+	      		<th>포인트</th>
+	      		<th>최근 접속일</th>
+	      		<th>가입일</th>
+	      	</tr>
+	      </thead>
+	      <tbody>
+			    <!-- 1 userwefwfid 김삐구끼뷖부기비 asdfewf@aefew.ekr M 1,234,533,323 2020.20.20 20:20:20 2020.20.20 20:20:20  -->
+	<!--         <tr th:each="user : ${list}"> 
+	          user_is_active 값에 따라 row 색 변하게 처리!
+	          <td>${user.rnum}</td>
+	          <td>${user.userId}</td>
+	          <td>${user.userNn}</td>
+	          <td>${user.userEmail}</td>
+	          <td>${user.userGender}</td>
+	          <td>${user.userPoint}</td>
+	          <td>${user.userJoinDt}</td>
+	          <td>${user.userLastLogin}</td>
+	        </tr> -->
+	        <tr th:each="num : ${#numbers.sequence(1,5)}" class="text-center">
+	          <td th:text="${num}"></td>
+	          <td th:text="userId + ${num}"></td>
+	          <td th:text="userNn + ${num}"></td>
+	          <td th:text="useremail+'@'+mail.com + ${num}"></td>
+	          <td>M</td>
+	          <td>10,000</td>
+	          <td>2020.20.20 20:20:20</td>
+	          <td>2020.20.20 20:20:20</td>
+	        </tr>
+	      </tbody>
+			</table>
+    </div>
+
+    <!-- Paging -->
+    <!-- 클릭 안되는 항목은 .disable -->
+    <div class="row">
+			<nav>
+			  <ul class="pagination">
+			    <li>
+			      <a href="#" aria-label="Previous">
+			        <span aria-hidden="true">&laquo;</span>
+			      </a>
+			    </li>
+			    <li><a href="#">1</a></li>
+			    <li><a href="#">2</a></li>
+			    <li><a href="#">3</a></li>
+			    <li><a href="#">4</a></li>
+			    <li><a href="#">5</a></li>
+			    <li>
+			      <a href="#" aria-label="Next">
+			        <span aria-hidden="true">&raquo;</span>
+			      </a>
+			    </li>
+			  </ul>
+			</nav>
+    </div><!-- End Paging -->
+    
+  </section><!-- End Real Content -->
+
+</div>
+
+</html>

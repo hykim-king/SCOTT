@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.scott.ngg.ReportMapper">
-  
+ 
   <!-- doRetreive 정렬조건 -->
   <sql id="orderCondition">
     <choose>
@@ -98,29 +98,25 @@
         report_st = #{reportSt} 
     WHERE report_sq = #{reportSq}
   </update>
-
-  <!-- doDelete: 삭제 -->
-  <delete id="doDelete" parameterType="ReportVO">
-    DELETE FROM report_t
-    WHERE report_sq = #{reportSq}
-  </delete>
-
+ 
   <!-- doInsert: 삽입 -->
   <insert id="doInsert" parameterType="ReportVO">
     INSERT INTO report_t (
-        type_sq, 
-        report_dt, 
-        report_cc_sq, 
-        report_ct, 
-        report_cnt, 
-        report_st 
+				type_sq,
+        report_user,   
+				report_dt, 
+				report_cc_sq, 
+				report_ct, 
+				report_cnt, 
+				report_st 
     ) VALUES (
-        #{typeSq}, 
-        SYSDATE, 
-        #{reportCcSq}, 
-        #{reportCt}, 
-        #{reportCnt}, 
-        #{reportSt} 
+				#{typeSq},
+        #{reportUser}
+				SYSDATE, 
+				#{reportCcSq}, 
+				#{reportCt}, 
+				#{reportCnt}, 
+				#{reportSt} 
     )
   </insert>
 
@@ -164,6 +160,5 @@
         FROM report_t
     )
   </select>
-
 
 </mapper>

@@ -14,10 +14,10 @@ import kr.scott.ngg.report.domain.ReportVO;
 @Repository("reportDao")
 public class ReportDaoImpl implements ReportDao {
 	final Logger LOG = LogManager.getLogger(getClass());
-	
+
 	@Autowired
-	private SqlSessionTemplate sqlSessionTemplate;
-	
+	SqlSessionTemplate sqlSessionTemplate;
+
 	final String NAMESPACE = "kr.scott.ngg.ReportMapper";
 
 	public ReportDaoImpl() {
@@ -25,58 +25,33 @@ public class ReportDaoImpl implements ReportDao {
 
 	@Override
 	public int doInsert(ReportVO inVO) {
-		LOG.debug("dao) doInsert => param: "+inVO);
-		
+		LOG.debug("dao) doInsert => param: " + inVO);
+
 		String statement = NAMESPACE + ".doInsert";
-		LOG.debug("dao) doInsert => statement: "+statement);
+		LOG.debug("dao) doInsert => statement: " + statement);
 
 		int flag = this.sqlSessionTemplate.insert(statement, inVO);
-		LOG.debug("dao) doInsert => flag: "+flag);
-		
-		return flag;
-	}
+		LOG.debug("dao) doInsert => flag: " + flag);
 
-	@Override
-	public int doDelete(ReportVO inVO) {
-		LOG.debug("dao) doDelete => param: "+inVO);
-		
-		String statement = NAMESPACE + ".doDelete";
-		LOG.debug("dao) doDelete => statement: "+statement);
-
-		int flag = this.sqlSessionTemplate.delete(statement, inVO);
-		LOG.debug("dao) doDelete => flag: "+flag);
-		
 		return flag;
 	}
 
 	@Override
 	public int doUpdate(ReportVO inVO) {
-		LOG.debug("dao) doUpdate => param: "+inVO);
-		
+		LOG.debug("dao) doUpdate => param: " + inVO);
+
 		String statement = NAMESPACE + ".doUpdate";
-		LOG.debug("dao) doUpdate => statement: "+statement);
+		LOG.debug("dao) doUpdate => statement: " + statement);
 
 		int flag = this.sqlSessionTemplate.update(statement, inVO);
-		LOG.debug("dao) doUpdate => flag: "+flag);
-		
+		LOG.debug("dao) doUpdate => flag: " + flag);
+
 		return flag;
 	}
 
 	@Override
-	public ReportVO doSelectOne(ReportVO inVO) {
-		LOG.debug("dao) doSelectOne => param: "+inVO);
-
-		String statement = NAMESPACE + ".doSelectOne";
-		LOG.debug("dao) doSelectOne => statement: "+statement);
-		
-		ReportVO outVO = this.sqlSessionTemplate.selectOne(statement, inVO);
-		LOG.debug("dao) doSelectOne => outVO: "+outVO);
-		
-		return outVO;
-	}
-
-	@Override
 	public List<ReportVO> doRetrieve(SearchVO inVO) {
+
 		LOG.debug("dao) doRetrieve => param: "+inVO);
 		
 		String statement = NAMESPACE + ".doRetrieve";
@@ -108,16 +83,8 @@ public class ReportDaoImpl implements ReportDao {
 		LOG.debug("dao) getCount => flag: "+flag);
 		
 		return flag;
-	}
+  }
 
-	@Override
-	public void deleteAll() {
-		String statement = NAMESPACE + ".deleteAll";
-		LOG.debug("dao) deleteAll => statement: "+statement);
-
-		int flag = this.sqlSessionTemplate.delete(statement);
-		LOG.debug("dao) deleteAll => flag: "+flag);
-	}
 
 	@Override
 	public ReportVO getLastData() {
@@ -131,3 +98,4 @@ public class ReportDaoImpl implements ReportDao {
 	}
 
 }//--class
+
