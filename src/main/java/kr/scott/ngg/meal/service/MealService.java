@@ -5,6 +5,7 @@ import java.util.List;
 
 import kr.scott.ngg.cmn.SearchVO;
 import kr.scott.ngg.meal.domain.MealVO;
+import kr.scott.ngg.meal.domain.MealdetailVO;
 
 public interface MealService {
 
@@ -12,11 +13,12 @@ public interface MealService {
 	/**
 	 * 단건 등록
 	 * 
-	 * @param MealVO
-	 * @return int 1(성공)/0(실패)
+	 * @param MealVO, List<MealdetailVO>
+	 * @return int >1(성공)/0(실패)
 	 * @throws SQLException
 	 */
-	public int doInsert(MealVO inVO) throws SQLException;
+	public int tdoInsert(MealVO inVO, List<MealdetailVO> list) throws SQLException;
+	public int tdoInsert(MealVO inVO, MealdetailVO[] list) throws SQLException;
 
 	/**
 	 * 단건 삭제
@@ -25,16 +27,16 @@ public interface MealService {
 	 * @return int 1(성공)/0(실패)
 	 * @throws SQLException
 	 */
-	public int doDelete(MealVO inVO) throws SQLException;
+	public int tdoDelete(MealVO inVO) throws SQLException;
 
 	/**
 	 * 단건 수정
 	 * 
-	 * @param MealVO
-	 * @return int 1(성공)/0(실패)
+	 * @param MealVO, List<MealdetailVO>
+	 * @return int >1(성공)/0(실패)
 	 * @throws SQLException
 	 */
-	public int doUpdate(MealVO inVO) throws SQLException;
+	public int tdoUpdate(MealVO inVO, List<MealdetailVO> list) throws SQLException;
 
 	/**
 	 * 단건 조회
@@ -54,5 +56,4 @@ public interface MealService {
 	public List<MealVO> doRetrieve(SearchVO inVO) throws SQLException;
 
 	
-	// --------------------- Meal functions
 }

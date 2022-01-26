@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 
 import kr.scott.ngg.cmn.SearchVO;
 import kr.scott.ngg.meal.dao.MealDao;
+import kr.scott.ngg.meal.dao.MealdetailDao;
 import kr.scott.ngg.meal.domain.MealVO;
+import kr.scott.ngg.meal.domain.MealdetailVO;
 
 @Service("mealService")
 public class MealServiceImpl implements MealService {
@@ -16,18 +18,43 @@ public class MealServiceImpl implements MealService {
 	@Autowired
 	MealDao dao;
 	
+	@Autowired
+	MealdetailDao mdao;
+	
 	@Override
-	public int doInsert(MealVO inVO) throws SQLException {
-		return dao.doInsert(inVO);
+	public int tdoInsert(MealVO inVO, List<MealdetailVO> list) throws SQLException {
+		int flag = dao.doInsert(inVO);
+		
+		for(MealdetailVO md : list) {
+			mdao.doInsert(md);
+		}
+		
+		return flag;
+	}
+	
+	@Override
+	public int tdoInsert(MealVO inVO, MealdetailVO[] list) throws SQLException {
+		int flag = dao.doInsert(inVO);
+		
+		for(MealdetailVO md : list) {
+			mdao.doInsert(md);
+		}
+		
+		return flag;
 	}
 
 	@Override
-	public int doDelete(MealVO inVO) throws SQLException {
+	public int tdoDelete(MealVO inVO) throws SQLException {
+		mdao.deleteByMealSq(inVO);
 		return dao.doDelete(inVO);
 	}
 
 	@Override
-	public int doUpdate(MealVO inVO) throws SQLException {
+	public int tdoUpdate(MealVO inVO, List<MealdetailVO> list) throws SQLException {
+		
+		for(MealdetailVO md : list) {
+			mdao.doInsert(md);
+		}
 		return dao.doUpdate(inVO);
 	}
 

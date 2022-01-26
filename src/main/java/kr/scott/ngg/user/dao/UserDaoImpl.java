@@ -8,6 +8,7 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import kr.scott.ngg.cmn.PieVO;
 import kr.scott.ngg.cmn.SearchVO;
 import kr.scott.ngg.user.domain.UserVO;
 
@@ -19,6 +20,9 @@ public class UserDaoImpl implements UserDao {
 	private SqlSessionTemplate sqlSessionTemplate;
 	
 	final String NAMESPACE = "kr.scott.ngg.UserMapper";
+
+	public UserDaoImpl() {
+	}
 
 	@Override
 	public int doInsert(UserVO inVO) {
@@ -74,10 +78,12 @@ public class UserDaoImpl implements UserDao {
 
 	@Override
 	public List<UserVO> doRetrieve(SearchVO inVO) {
+		LOG.debug("dao) doRetrieve => param: "+inVO);
+		
 		String statement = NAMESPACE + ".doRetrieve";
 		LOG.debug("dao) doRetrieve => statement: "+statement);
 		
-		List<UserVO> list = this.sqlSessionTemplate.selectList(statement);
+		List<UserVO> list = this.sqlSessionTemplate.selectList(statement, inVO);
 		LOG.debug("dao) doRetrieve => list: "+list);
 		
 		return list;
@@ -86,21 +92,22 @@ public class UserDaoImpl implements UserDao {
 	@Override
 	public List<UserVO> getAll() {
 		String statement = NAMESPACE + ".getAll";
-		LOG.debug("dao) deleteAll => statement: "+statement);
+		LOG.debug("dao) getAll => statement: "+statement);
 		
 		List<UserVO> list = this.sqlSessionTemplate.selectList(statement);
-		LOG.debug("dao) deleteAll => list: "+list);
+		LOG.debug("dao) getAll => list: "+list);
 		
 		return list;
 	}
 
+	// ---------------------------------------------------------
 	@Override
 	public int getCount() {
 		String statement = NAMESPACE + ".getCount";
-		LOG.debug("dao) deleteAll => statement: "+statement);
+		LOG.debug("dao) getCount => statement: "+statement);
 		
 		int flag = this.sqlSessionTemplate.selectOne(statement);
-		LOG.debug("dao) deleteAll => flag: "+flag);
+		LOG.debug("dao) getCount => flag: "+flag);
 		
 		return flag;
 	}
@@ -112,6 +119,86 @@ public class UserDaoImpl implements UserDao {
 
 		int flag = this.sqlSessionTemplate.delete(statement);
 		LOG.debug("dao) deleteAll => flag: "+flag);
+	}
+	
+	// --------------------- User functions
+	@Override
+	public int pwCheck(UserVO inVO) {
+		LOG.debug("dao) pwCheck => param: "+inVO);
+
+		String statement = NAMESPACE + ".pwCheck";
+		LOG.debug("dao) pwCheck => statement: "+statement);
+		
+		int flag = this.sqlSessionTemplate.selectOne(statement, inVO);
+		LOG.debug("dao) pwCheck => flag: "+flag);
+		
+		return flag;
+	}
+	
+	@Override
+	public int idCheck(UserVO inVO) {
+		LOG.debug("dao) idCheck => param: "+inVO);
+		
+		String statement = NAMESPACE + ".idCheck";
+		LOG.debug("dao) idCheck => statement: "+statement);
+		
+		int flag = this.sqlSessionTemplate.selectOne(statement, inVO);
+		LOG.debug("dao) idCheck => flag: "+flag);
+		
+		return flag;
+	}
+
+	@Override
+	public int nnCheck(UserVO inVO) {
+		LOG.debug("dao) nnCheck => param: "+inVO);
+		
+		String statement = NAMESPACE + ".nnCheck";
+		LOG.debug("dao) nnCheck => statement: "+statement);
+		
+		int flag = this.sqlSessionTemplate.selectOne(statement, inVO);
+		LOG.debug("dao) nnCheck => flag: "+flag);
+		
+		return flag;
+	}
+	
+	@Override
+	public int updateLastLogin(UserVO inVO) {
+		LOG.debug("dao) updateLastLogin => param: "+inVO);
+		
+		String statement = NAMESPACE + ".updateLastLogin";
+		LOG.debug("dao) updateLastLogin => statement: "+statement);
+		
+		int flag = this.sqlSessionTemplate.update(statement, inVO);
+		LOG.debug("dao) updateLastLogin => flag: "+flag);
+		
+		return flag;
+	}
+	
+	// --------------------- Admin User functions
+	@Override
+	public List<PieVO> getDailyRegCnt(String dateStr) {
+		LOG.debug("dao) getDailyRegCnt => param: "+dateStr);
+		
+		String statement = NAMESPACE + ".getDailyRegCnt";
+		LOG.debug("dao) getDailyRegCnt => statement: "+statement);
+		
+		List<PieVO> list = this.sqlSessionTemplate.selectList(statement, dateStr);
+		LOG.debug("dao) getDailyRegCnt => list: "+list);
+	
+		return list;
+	}
+
+	@Override
+	public List<PieVO> getWeeklyRegCnt(String dateStr) {
+		LOG.debug("dao) getWeeklyRegCnt => param: "+dateStr);
+		
+		String statement = NAMESPACE + ".getWeeklyRegCnt";
+		LOG.debug("dao) getWeeklyRegCnt => statement: "+statement);
+		
+		List<PieVO> list = this.sqlSessionTemplate.selectList(statement, dateStr);
+		LOG.debug("dao) getWeeklyRegCnt => list: "+list);
+	
+		return list;
 	}
 
 }//--class

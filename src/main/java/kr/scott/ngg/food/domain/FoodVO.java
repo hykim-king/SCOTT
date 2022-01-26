@@ -13,7 +13,6 @@ public class FoodVO extends DTO {
 	private int foodCt;
 
 	public FoodVO() {
-		// TODO Auto-generated constructor stub
 	}
 
 	public FoodVO(int foodSq, String foodName, int foodKcal, int foodCt) {
@@ -21,6 +20,20 @@ public class FoodVO extends DTO {
 		this.foodName = foodName;
 		this.foodKcal = foodKcal;
 		this.foodCt = foodCt;
+	}
+
+	public FoodVO(String foodName, int foodKcal, int foodCt) {
+		this.foodSq = 0;
+		this.foodName = foodName;
+		this.foodKcal = foodKcal;
+		this.foodCt = foodCt;
+	}
+
+	public FoodVO(String foodName, String foodKcal, String foodCt) {
+		this.foodSq = 0;
+		this.foodName = foodName;
+		this.foodKcal = Integer.parseInt(foodKcal);
+		this.foodCt = Integer.parseInt(foodCt);
 	}
 
 	public int getFoodSq() {

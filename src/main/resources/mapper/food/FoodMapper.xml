@@ -5,12 +5,12 @@
   <!-- doRetreive 정렬조건 -->
   <sql id="orderCondition">
     <choose>
-        <when test="orderDiv != '' and orderDir != ''">
-            ORDER BY ${orderDiv} ${orderDir}
-        </when>
-        <otherwise>
-            ORDER BY food_name ASC
-        </otherwise>
+	      <when test="orderDiv != '' and orderDir != ''">
+	          ORDER BY ${orderDiv} ${orderDir}
+	      </when>
+	      <otherwise>
+	          ORDER BY food_name ASC
+	      </otherwise>
     </choose>
   </sql>
 
@@ -26,70 +26,70 @@
 
   <!-- doRetrieve: 조회+검색,페이징 -->
   <select id="doRetrieve" parameterType="SearchVO" resultType="FoodVO">
-    SELECT A.*, B.*
-    FROM (
-        SELECT ff.rnum "num",
-               ff.food_sq "foodSq",
-               ff.food_name "foodName",
-               ff.food_kcal "foodKcal",
-               ff.food_ct "foodCt" 
-        FROM (
-            SELECT ROWNUM rnum, 
-                   f.*
-            FROM (
-                SELECT food_sq, 
-                       food_name, 
-                       food_kcal, 
-                       food_ct 
-                FROM food_t 
-                <include refid="searchCondition"/>
-                <include refid="orderCondition"/>
-            ) f
-        ) ff
-        WHERE rnum BETWEEN (#{pageSize}*(#{pageNum}-1))+1 AND (#{pageSize}*(#{pageNum}-1))+#{pageSize}
-    ) A CROSS JOIN (
-        SELECT COUNT(*) "totalNum"
-        FROM food_t
-        <include refid="searchCondition"/>
-    ) B
+		SELECT A.*, B.*
+		FROM (
+		    SELECT ff.rnum "num",
+		           ff.food_sq "foodSq",
+		           ff.food_name "foodName",
+		           ff.food_kcal "foodKcal",
+		           ff.food_ct "foodCt" 
+		    FROM (
+		        SELECT ROWNUM rnum, 
+		               f.*
+		        FROM (
+		            SELECT food_sq, 
+		                   food_name, 
+		                   food_kcal, 
+		                   food_ct 
+		            FROM food_t 
+		            <include refid="searchCondition"/>
+		            <include refid="orderCondition"/>
+		        ) f
+		    ) ff
+		    WHERE rnum BETWEEN (#{pageSize}*(#{pageNum}-1))+1 AND (#{pageSize}*(#{pageNum}-1))+#{pageSize}
+		) A CROSS JOIN (
+		    SELECT COUNT(*) "totalNum"
+		    FROM food_t
+		    <include refid="searchCondition"/>
+		) B
   </select>
 
   <!-- doSelectOne: 단건 조회 -->
   <select id="doSelectOne" parameterType="FoodVO" resultType="FoodVO">
-    SELECT food_sq "foodSq", 
-           food_name "foodName", 
-           food_kcal "foodKcal", 
-           food_ct "foodCt" 
-    FROM food_t 
-    WHERE food_sq = #{foodSq}
+		SELECT food_sq "foodSq", 
+		       food_name "foodName", 
+		       food_kcal "foodKcal", 
+		       food_ct "foodCt" 
+		FROM food_t 
+		WHERE food_sq = #{foodSq}
   </select>
 
   <!-- doUpdate: 수정 -->
   <update id="doUpdate" parameterType="FoodVO">
-    UPDATE food_t 
-    SET food_name = #{foodName}, 
-        food_kcal = #{foodKcal}, 
-        food_ct = #{foodCt} 
-    WHERE food_sq = #{foodSq}
+		UPDATE food_t 
+		SET food_name = #{foodName}, 
+		    food_kcal = #{foodKcal}, 
+		    food_ct = #{foodCt} 
+		WHERE food_sq = #{foodSq}
   </update>
 
   <!-- doDelete: 삭제 -->
   <delete id="doDelete" parameterType="FoodVO">
-    DELETE FROM food_t
-    WHERE food_sq = #{foodSq}
+		DELETE FROM food_t
+		WHERE food_sq = #{foodSq}
   </delete>
 
   <!-- doInsert: 삽입 -->
   <insert id="doInsert" parameterType="FoodVO">
-    INSERT INTO food_t (
-        food_name, 
-        food_kcal, 
-        food_ct
-    ) VALUES (
-        #{foodName}, 
-        #{foodKcal}, 
-        #{foodCt}
-    )
+		INSERT INTO food_t (
+		    food_name, 
+		    food_kcal, 
+		    food_ct
+		) VALUES (
+		    #{foodName}, 
+		    #{foodKcal}, 
+		    #{foodCt}
+		)
   </insert>
 
 
