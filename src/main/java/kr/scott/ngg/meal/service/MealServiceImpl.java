@@ -17,29 +17,15 @@ public class MealServiceImpl implements MealService {
 
 	@Autowired
 	MealDao dao;
-	
+
 	@Autowired
 	MealdetailDao mdao;
-	
+
 	@Override
 	public int tdoInsert(MealVO inVO, List<MealdetailVO> list) throws SQLException {
 		int flag = dao.doInsert(inVO);
-		
-		for(MealdetailVO md : list) {
-			mdao.doInsert(md);
-		}
-		
-		return flag;
-	}
-	
-	@Override
-	public int tdoInsert(MealVO inVO, MealdetailVO[] list) throws SQLException {
-		int flag = dao.doInsert(inVO);
-		
-		for(MealdetailVO md : list) {
-			mdao.doInsert(md);
-		}
-		
+		flag = insertMealdetail(list, 0);
+
 		return flag;
 	}
 
@@ -50,12 +36,20 @@ public class MealServiceImpl implements MealService {
 	}
 
 	@Override
-	public int tdoUpdate(MealVO inVO, List<MealdetailVO> list) throws SQLException {
-		
-		for(MealdetailVO md : list) {
-			mdao.doInsert(md);
+	public int tdoUpdate(MealVO inVO, List<MealdetailVO> list, List<Integer> delList) throws SQLException {
+		int flag = dao.doUpdate(inVO);
+
+		flag = insertMealdetail(list, 1);
+
+		if (delList != null && delList.size() > 0) {
+			MealdetailVO mdVO = new MealdetailVO();
+			for (int sq : delList) {
+				mdVO.setMealdetailSq(sq);
+				flag = mdao.doDelete(mdVO);
+			}
 		}
-		return dao.doUpdate(inVO);
+
+		return flag;
 	}
 
 	@Override
@@ -66,6 +60,27 @@ public class MealServiceImpl implements MealService {
 	@Override
 	public List<MealVO> doRetrieve(SearchVO inVO) throws SQLException {
 		return dao.doRetrieve(inVO);
+	}
+
+	@Override
+	public List<MealdetailVO> getMealdetailList(MealVO inVO) throws SQLException {
+		return mdao.doRetrieve(inVO);
+	}
+
+	public int insertMealdetail(List<MealdetailVO> list, int div) {
+		if (list == null || list.size() < 0) return 0;
+		
+		for (MealdetailVO md : list) {
+			if (md.getMealdetailSq() == 0) {
+				if(div == 0) {
+					mdao.doInsert(md);
+				} else {
+					mdao.doUpdate(md);
+				}
+			}
+		}
+		
+		return 1;
 	}
 
 }

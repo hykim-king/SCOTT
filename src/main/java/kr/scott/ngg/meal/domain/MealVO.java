@@ -25,6 +25,14 @@ public class MealVO extends DTO {
 		this.mealDivs = mealDivs;
 	}
 
+	public MealVO(String mealSq, String mealDate, String userId, String mealKcal, String mealDivs) {
+		this.mealSq = Integer.parseInt(mealSq);
+		this.mealDate = mealDate;
+		this.userId = userId;
+		this.mealKcal = Integer.parseInt(mealKcal);
+		this.mealDivs = mealDivs;
+	}
+
 	public int getMealSq() {
 		return mealSq;
 	}

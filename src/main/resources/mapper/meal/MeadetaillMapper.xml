@@ -27,13 +27,28 @@
 
   <!-- doUpdate: 수정 -->
   <update id="doUpdate" parameterType="MealdetailVO">
+    INSERT INTO mealdetail_t (
+        meal_sq, 
+        meal_div,  
+        food_name, 
+        food_kcal, 
+        food_ct    
+    ) VALUES (
+        #{mealSq},
+        #{mealDiv},
+        #{foodName},
+        #{foodKcal},
+        #{foodCt}
+    )
+  </update>
+<!--   <update id="doUpdate" parameterType="MealdetailVO">
 		UPDATE mealdetail_t
 		SET meal_div = #{mealDiv}, 
 				food_name = #{foodName},
 				food_kcal = #{foodKcal}, 
 				food_ct = #{foodCt} 
 		WHERE mealdetail_sq = #{mealdetailSq}
-  </update>
+  </update> -->
 
   <!-- deleteByMealSq: 삭제 -->
   <delete id="deleteByMealSq" parameterType="MealVO">

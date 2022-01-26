@@ -23,7 +23,9 @@
 	    cursor: pointer;
     }
     #addBtn,
-    .delBtn  {
+    .delBtn,
+    .mdDelBtn,
+    .meal-content  {
       cursor: pointer;
     }
     .fDivBadge {
@@ -38,7 +40,7 @@
 $(document).ready(function(){
 		// Date Picker
 		$(".datepicker").datepicker({
-			autoHide: false,
+			autoHide: true,
 			days: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
 			daysShort: ['일', '월', '화', '수', '목', '금', '토'],
 			daysMin: ['일', '월', '화', '수', '목', '금', '토'],
@@ -50,81 +52,185 @@ $(document).ready(function(){
 			format: 'yyyy.mm.dd'
 		});
 	 
-		
-	 // 식단
-	 $(".delBtn").on("click", function(){
-	    let mealSq = $(this).find("input.data-sq").val();
-	    let dateVal = $(this).find(".mealDate").text();
-		  
+
+	  /* --- 식단  --------------------------------------- */
+	  // 식단 삭제
+	 $(".delBtn").on("click", function(e){
+		  e.stopPropagation();
+	    let mealSq = $(this).parents().find("input.mealSqHidden").val();
+	    
 	    let url = "[[@{/meal/api/meal/}]]"+mealSq;
 	    let params = {};
 	    let method = "DELETE";
 	    let async = true;
 	          
-	    console.log(url);
-	    // if(confirm("식단을 삭제하시겠습니까?") == false) return;
-	    // ajaxHelper.callAjax(url, params, method, async, function(data){});
+	    //console.log(url);
+	    if(confirm("식단을 삭제하시겠습니까?") == false) return;
+	    ajaxHelper.callAjax(url, params, method, async, function(data){
+	    	  alert(data.msgContent);
+	    });
 	 });
 	 
+	 // 식단 저장 버튼 이벤트
 	 $("#mealSaveBtn").on("click", function(){
-		  // hidden으로 박아놓은 정보들 가져와서 map으로 만들어서 보내야함..
+		  // Map<String, Object> map / MealVO meal / List<MealdetailVO> mdList
+		  // MealVO datas
+		  let mealSq = $("#mealSqSavor").val();
+		  let userId = "[[${session.user.userId}]]";
+		  let mealKcal = $("#totalKcal").attr("data-kcal");
+		  let mealDate = $(".datepicker").val();
+		  let mealDivs = "";
 		  
-		  // Map<String, Object> reqMap / MealVO mealVO / List<MealdetailVO> mealdetailVO
-		  let reqMap = new Map();
-		  reqMap.set('mealVO', 1);
-		  reqMap.set('mealdetailVO', 1);
+		  let mealdetails = [];
+      
+		  $(".foodList").each(function(i, item){
+			    let values = item.value.split(',');
+			    let md = {
+			    		"mealdetailSq": values[0],
+			    		"mealSq": values[1],
+			    		"mealDiv": values[2],
+			    		"foodSq": 0,
+			    		"foodName": values[3],
+			    		"foodKcal": values[4],
+			    		"foodCt": values[5]
+			    };
+		    	mealdetails.push(md);
+		  });
+		  console.log(mealdetails);
 		  
-		  let mealdetails = $(".foodList");
+		  $(".foodDivCnt").each(function(i, item){
+			     let cnt = Number(item.getAttribute("data-cnt"));
+			     mealDivs += (cnt > 0)? i.toString(): ''; 
+		  });
 		  
 		  let meal = {
-				  "mealSq": mealSq,
-				  "mealDate": mealDate,
-				  "userId": userId,
-				  "mealKcal": mealKcal,
-				  "mealDivs": mealDivs,
+				  "mealSq":mealSq,
+				  "mealDate":mealDate,
+				  "userId":userId,
+				  "mealKcal":mealKcal,
+				  "mealDivs":mealDivs,
 		  };
 		 
-      let url = "[[@{/meal/api/meal/}]]";
-      let params = {};
-      let method = "POST";
-      let async = true;
-      console.log(url);
+		  let map = new Map();
+		  map.set("meal", meal);
+	    map.set("mdList", mealdetails);
+      
+      if(mealSq == 0) { // mealSq가 0이면 최초 등록
+    	  $.ajax({
+	    	  url: "[[@{/meal/api/meal}]]",
+	    	  type:"POST",
+	    	  data: JSON.stringify({
+	    		  "meal":meal,
+	    		  "mdList":mealdetails
+	    	  }),
+	    	  dataType:"json",
+	    	  contentType: "application/json",
+	    	  async: true,
+	    	  success: function(res){
+	    		  console.log(res);
+	    		  
+	    		  $(".btn-close").click();
+	    		  initModal();
+	    		  alert(res.msgContent);
+	    		  
+	    	  },
+	    	  error: function(err){
+	    		  console.log(err);
+	    	  }
+	      });
+      } else { // mealSq가 0이 아니면 수정
+    	  $.ajax({
+          url: "[[@{/meal/api/meal/}]]"+mealSq,
+          type:"PUT",
+          data: JSON.stringify({
+            "meal":meal,
+            "mdList":mealdetails,
+            "delList": $("#delList").val()
+          }),
+          dataType:"json",
+          contentType: "application/json",
+          async: true,
+          success: function(res){
+            console.log(res);
+            
+            $(".btn-close").click();
+            initModal();
+            alert(res.msgContent);
+            
+          },
+          error: function(err){
+            console.log(err);
+          }
+         });
+        
+          
+    	  
+      }
+		  
+		  
+		  
+      
 	 });
 	 
-	 // 식단 상세
-	 const foodDivNames = ["탄", "단", "지", "기"];
 	 
+	 /* --- 식단 리스트  --------------------------------------- */
+	 // 식단 상세
+   const foodDivNames = ["탄", "단", "지", "기"];
+	 
+	 // 식단 리스트에서 삭제
+	 $(".foodDiv").on("click", ".mdDelBtn", function(e){
+		  if(confirm("삭제하시겠습니까?") == false) return;
+		  
+		  // 삭제 리스트에 추가
+		  let mdSq = $(this).attr("data-sq");
+		  if(mdSq != "0") $("#delList").val($("#delList").val() + "," + mdSq);
+		  
+		  // 총 칼로리 계산
+		  let foodKcal = $(this).prev().prev().text().replace(/[가-힣a-z]/gi, '').trim();
+		  let totalKcal = $("#totalKcal").attr("data-kcal");
+	    totalKcal = Number(totalKcal) - Number(foodKcal);
+	    $("#totalKcal").text(totalKcal.toLocaleString()).attr("data-kcal", totalKcal);
+		  
+		  $(this).parent().next().remove();
+		  $(this).parent("li").remove();
+	 });
+	 
+	 // 식단 리스트에 추가
 	 $("#foodAddBtn").on("click", function(){
+		  let mealSq = $("#mealSqSavor").val();
 			let foodDivs = $(".foodDiv");
 			let mealDiv = $("#mealDiv").val();
 			let foodName = $("#foodName").val();
-			let foodKcal = $("#foodKcal").val();
+			let foodKcal = $("#foodKcal").val() == ""? "0": $("#foodKcal").val();
 			let foodCt = $("#foodCt").val();
-			let totalKcal = $("#totalKcal").text();
+			let totalKcal = $("#totalKcal").attr("data-kcal");
 			totalKcal = Number(totalKcal) + Number(foodKcal);
 			
 			$("#totalKcal").text(totalKcal.toLocaleString()).attr("data-kcal", totalKcal);
 		 
 			let data = {
 				 "mealdetailSq":0,
-				 "mealSq":0,
+				 "mealSq":mealSq,
 				 "mealDiv":Number(mealDiv),
 				 "foodSq":0,
 				 "foodName":foodName,
 				 "foodKcal":Number(foodKcal),
-				 "foodCt":Number(foodCt),
+				 "foodCt":Number(foodCt)
 			};
 		 
 			//console.log(data);
 			
 			drawLine(foodDivs, data);
-			resetFunc();		 
-	 });
+			initInput();		 
+	 });//foodAddBtn.click
 	 
-	 // 음식 상세
+	 // 음식 상세 열기
 	 $(".meal-content").on("click", function(){
-			let mealSq = $(this).find("input.data-sq").val();
+		  $("#addBtn").click();
+		  
+			let mealSq = $(this).find(".mealSqHidden").val();
 			let dateVal = $(this).find(".mealDate").text();
+			console.log(dateVal);
 			 
 			let url = "[[@{/meal/api/meal/}]]"+mealSq;
 	    let params = {};
@@ -137,6 +243,8 @@ $(document).ready(function(){
    	    foodDivs.empty();
    	    $(".datepicker").val(dateVal);
    	    
+	      $("#mealSqSavor").val(data[0].mealSq);
+	      
    	    $.each(data, function(idx, item){
    	       console.log(item);
    	       totalKcal += item.foodKcal;
@@ -145,35 +253,52 @@ $(document).ready(function(){
    	     });
    	    
    	    $("#totalKcal").text(totalKcal.toLocaleString()).attr("data-kcal", totalKcal);
+   	    
 		 });
       
 	 });//--meal-content.click
 	 
+	 $(".btn-close").on("click", initModal);
+	 $("#modalCloseBtn").on("click", initModal);
 	 
 	 /* ----------------- FUNCTIONS -------------*/
-	 function resetFunc(){
+	 function initInput(){
 		  $("#mealDiv").val(0);
 		  $("#foodName").val("");
 		  $("#foodKcal").val("");
 		  $("#foodCt").val(0);
+		  $("#delList").val("");
 		  $(":focus").blur();
+	 }
+	 
+	 function initModal(){
+		  $("#mealSqSavor").val(0);
+		  $(".datepicker").val("");
+		  $("#totalKcal").text(0).attr("data-kcal", 0);
+		  initInput();
+		  $(".foodDiv").empty();
 	 }
 	 
 	 // li 한줄. list: 추가될 목록 그룹, data: mealdetailVO
 	 function drawLine(list, data){
 		  let liStr = '<span class="ms-1 me-1">'+data.foodName
-				         +'<span clss="foodKcal"> '+data.foodKcal.toLocaleString()+'kcal</span></span>'
+				         +'<span clss="foodKcal"> '+data.foodKcal.toLocaleString()+'</span>kcal</span>'
 				         +'<sup class="fDivBadge me-2">'+foodDivNames[data.foodCt]+'</sup>'
-				         +'<i class="bi bi-backspace mdDelBtn"></i>';
+				         +'<i class="bi bi-backspace mdDelBtn" data-sq="'+data.mealdetailSq+'"></i>';
             
 			let hdVal = document.createElement("input");
 			hdVal.setAttribute("type", "hidden");
 			hdVal.setAttribute("class", "foodList");
-			hdVal.value = JSON.stringify(data);
+			
+			let foodInfo = data.mealdetailSq + "," + data.mealSq + "," + data.mealDiv + "," + data.foodName + "," + data.foodKcal + "," + data.foodCt; 
+			hdVal.value = foodInfo;
 			 
 			let temp = document.createElement("li");
 			temp.innerHTML = liStr;
 			
+			let counter = document.getElementsByClassName("foodDivCnt");
+			
+			counter[data.mealDiv].setAttribute("data-cnt", Number(counter[data.mealDiv].getAttribute("data-cnt")) + 1);
 			list[data.mealDiv].appendChild(temp);
 			list[data.mealDiv].appendChild(hdVal);
 	 }
@@ -208,7 +333,8 @@ $(document).ready(function(){
           <option value="50">50개</option>
           <option value="100">100개</option>
         </select>
-        <span th:text="${mealList}!=null? '총 '+${mealList[0].num}+'개': '총 0개'">총 글 수</span>
+        <span th:if="${mealList}!=null" th:text="'총 '+'개'">총 글 수</span>
+        <span th:unless="${mealList}!=null" th:text="'총 0개'">총 글 수</span>
       </div><!-- End Nuumber per Page -->
       
       <div>
@@ -222,8 +348,8 @@ $(document).ready(function(){
       <div class="meal-container">
       
 	      <!-- Meal Content -> 반복될 아이템 -->
-	      <div th:each="meal : ${mealList}" class="meal-content bg bg-info bg-opacity-10 my-2 px-4 py-3 rounded-3">
-	        <input type="hidden" class="data-sq" th:value="${meal.mealSq}">
+	      <div th:if="${mealList}!=null" th:each="meal : ${mealList}" class="meal-content bg bg-info bg-opacity-10 my-2 px-4 py-3 rounded-3">
+	        <input type="hidden" class="mealSqHidden" th:value="${meal.mealSq}!=null?${meal.mealSq}:0">
 	      
 	        <!-- Meal Content Nav -->
 	        <div class="d-flex justify-content-between align-items-center">
@@ -254,6 +380,10 @@ $(document).ready(function(){
 	        </div>
 	        
 	      </div><!-- End Meal Content -->
+	      
+	      <div th:unless="${mealList}!=null" class="d-flex justify-content-center flex-shrink align-items-center">
+	       <p style="color:red;">data not found</p>
+	      </div>
     
       </div><!-- End Meal Container -->
      
@@ -264,7 +394,7 @@ $(document).ready(function(){
     
     <!-- Input Modal -->
     <!-- modal fade -->
-    <div class="" id="inputModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="inputModal" tabindex="-1" aria-hidden="true">
 		  <div class="modal-dialog">
 		    <div class="modal-content">
 		      <div class="modal-header">
@@ -305,36 +435,39 @@ $(document).ready(function(){
 					    <ul class="overflow-auto list-unstyled" id="foodList">
 					    
 					      <li class="d-flex justify-content-between align-items-center my-2">
-					        <span class="col-3 text-center">아침</span>
+					        <span class="col-3 text-center foodDivCnt" data-cnt="0">아침</span>
 					        <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
 					        </ul>
 					      </li>
 					      
 					      <li class="d-flex justify-content-between align-items-center my-3">
-					        <span class="col-3 text-center">점심</span>
+					        <span class="col-3 text-center foodDivCnt" data-cnt="0">점심</span>
 					        <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
 					        </ul>
 					      </li>
 					      
 					      <li class="d-flex justify-content-between align-items-center my-3">
-					        <span class="col-3 text-center">저녁</span>
+					        <span class="col-3 text-center foodDivCnt" data-cnt="0">저녁</span>
 					        <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
 					        </ul>
 					      </li>
 					      
 					      <li class="d-flex justify-content-between align-items-center my-3">
-					        <span class="col-3 text-center">간식</span>
+					        <span class="col-3 text-center foodDivCnt" data-cnt="0">간식</span>
 					        <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
 					        </ul>
 					      </li>
 					      
 					    </ul>
+					    
+					    <input type="hidden" id="delList" />
 					  </div><!-- End Food List -->
 					  
 					</div><!-- End Input Modal -->
 		      
 		      <div class="modal-footer justify-content-center">
-		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+		        <input type="hidden" id="mealSqSavor" value="0" />
+		        <button type="button" id="modalCloseBtn"  class="btn btn-secondary " data-bs-dismiss="modal">닫기</button>
 		        <button type="button" id="mealSaveBtn" class="btn btn-primary">저장</button>
 		      </div>
 		      

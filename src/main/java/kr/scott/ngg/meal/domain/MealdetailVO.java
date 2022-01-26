@@ -20,12 +20,18 @@ public class MealdetailVO extends FoodVO {
 		this.mealDiv = mealDiv;
 	}
 
-	public MealdetailVO(int mealdetailSq, int mealSq, int mealDiv, String foodName, String foodKcal,
-			String foodCt) {
+	public MealdetailVO(int mealdetailSq, int mealSq, int mealDiv, String foodName, String foodKcal, String foodCt) {
 		super(foodName, foodKcal, foodCt);
 		this.mealdetailSq = mealdetailSq;
 		this.mealSq = mealSq;
 		this.mealDiv = mealDiv;
+	}
+
+	public MealdetailVO(String mealdetailSq, String mealSq, String mealDiv, String foodName, String foodKcal, String foodCt) {
+		super(foodName, foodKcal, foodCt);
+		this.mealdetailSq = Integer.parseInt(mealdetailSq);
+		this.mealSq = Integer.parseInt(mealSq);
+		this.mealDiv = Integer.parseInt(mealDiv);
 	}
 
 	public int getMealdetailSq() {

@@ -18,7 +18,6 @@ public interface MealService {
 	 * @throws SQLException
 	 */
 	public int tdoInsert(MealVO inVO, List<MealdetailVO> list) throws SQLException;
-	public int tdoInsert(MealVO inVO, MealdetailVO[] list) throws SQLException;
 
 	/**
 	 * 단건 삭제
@@ -36,7 +35,7 @@ public interface MealService {
 	 * @return int >1(성공)/0(실패)
 	 * @throws SQLException
 	 */
-	public int tdoUpdate(MealVO inVO, List<MealdetailVO> list) throws SQLException;
+	public int tdoUpdate(MealVO inVO, List<MealdetailVO> list, List<Integer> delList) throws SQLException;
 
 	/**
 	 * 단건 조회
@@ -54,6 +53,15 @@ public interface MealService {
 	 * @throws SQLException
 	 */
 	public List<MealVO> doRetrieve(SearchVO inVO) throws SQLException;
+	
+	/**
+	 * 식단 상세 
+	 * 
+	 * @param MealVO
+	 * @return List<MealdetailVO>
+	 * @throws SQLException
+	 */
+	public List<MealdetailVO> getMealdetailList(MealVO inVO) throws SQLException;
 
 	
 }
