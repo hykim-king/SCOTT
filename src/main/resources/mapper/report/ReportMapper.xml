@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.scott.ngg.ReportMapper">
+  
+  <!-- doRetreive 정렬조건 -->
+  <sql id="orderCondition">
+    <choose>
+        <when test="orderDiv != '' and orderDir != ''">
+            ORDER BY ${orderDiv} ${orderDir}
+        </when>
+        <otherwise>
+            ORDER BY report_st ASC, report_dt DESC
+        </otherwise>
+    </choose>
+  </sql>
+  
+  <!-- doRetreive 검색조건 -->
+  <!-- SearchDiv: report_cnt(10) -->
+  <!-- SearchDateDiv - report_dt(10) --> 
+  <sql id="searchCondition">
+      <where>
+          <choose>
+              <when test="searchDiv == '10' and searchWord != ''">
+                  report_cnt LIKE '%' || #{searchWord} || '%'
+              </when>
+          </choose>
+
+          <choose>
+              <when test="searchDateDiv == '10'">
+                  <if test="startDate != ''">
+                    AND report_dt <![CDATA[>= TO_DATE(#{startDate})]]>
+                  </if>
+                  <if test="endDate != ''">
+                    AND report_dt <![CDATA[<= TO_DATE(#{endDate})]]>
+                  </if>
+              </when>
+          </choose>
+      </where>
+  </sql>
+
+  <!-- doRetrieve: 조회+검색,페이징 -->
+  <select id="doRetrieve" parameterType="SearchVO" resultType="ReportVO">
+    SELECT B.*, A.* 
+    FROM (
+        SELECT COUNT(*) "totalNum"
+        FROM report_t
+        <include refid="searchCondition"/>
+    ) A CROSS JOIN (
+        SELECT rr.rnum "num",
+               rr.report_sq "reportSq", 
+               rr.type_sq "typeSq", 
+               TO_CHAR(rr.report_dt, DECODE(TRUNC(rr.report_dt), TRUNC(SYSDATE), 'HH24:MI:SS', 'YYYY/MM/DD HH24:MI:SS')) "reportDt", 
+               rr.report_cc_sq "reportCcSq", 
+               rr.report_ct "reportCt", 
+               rr.report_cnt "reportCnt", 
+               rr.report_st "reportSt" 
+        FROM (
+            SELECT ROWNUM rnum,
+                   r.*
+            FROM (
+                SELECT report_sq, 
+                       type_sq, 
+                       report_dt, 
+                       report_cc_sq, 
+                       report_ct, 
+                       report_cnt, 
+                       report_st 
+                FROM report_t
+                <include refid="searchCondition"/>
+                <include refid="orderCondition"/>
+            ) r
+        ) rr
+        WHERE rnum BETWEEN (#{pageSize}*(#{pageNum}-1))+1 AND (#{pageSize}*(#{pageNum}-1))+#{pageSize}
+    ) B
+  </select>
+
+  <!-- doSelectOne: 단건 조회 -->
+  <select id="doSelectOne" parameterType="ReportVO" resultType="ReportVO">
+    SELECT report_sq "reportSq", 
+           type_sq "typeSq", 
+           TO_CHAR(report_dt, DECODE(TRUNC(report_dt), TRUNC(SYSDATE), 'HH24:MI:SS', 'YYYY/MM/DD HH24:MI:SS')) "reportDt", 
+           report_cc_sq "reportCcSq", 
+           report_ct "reportCt", 
+           report_cnt "reportCnt", 
+           report_st "reportSt" 
+    FROM report_t 
+    WHERE report_sq = #{reportSq}
+  </select>
+
+  <!-- doUpdate: 수정 -->
+  <update id="doUpdate" parameterType="ReportVO">
+    UPDATE report_t
+    SET type_sq = #{typeSq}, 
+        report_dt = #{reportDt}, 
+        report_cc_sq = #{reportCcSq}, 
+        report_ct = #{reportCt}, 
+        report_cnt = #{reportCnt}, 
+        report_st = #{reportSt} 
+    WHERE report_sq = #{reportSq}
+  </update>
+
+  <!-- doDelete: 삭제 -->
+  <delete id="doDelete" parameterType="ReportVO">
+    DELETE FROM report_t
+    WHERE report_sq = #{reportSq}
+  </delete>
+
+  <!-- doInsert: 삽입 -->
+  <insert id="doInsert" parameterType="ReportVO">
+    INSERT INTO report_t (
+        type_sq, 
+        report_dt, 
+        report_cc_sq, 
+        report_ct, 
+        report_cnt, 
+        report_st 
+    ) VALUES (
+        #{typeSq}, 
+        SYSDATE, 
+        #{reportCcSq}, 
+        #{reportCt}, 
+        #{reportCnt}, 
+        #{reportSt} 
+    )
+  </insert>
+
+
+  <!--========= for JUnit Test =========-->
+  <!-- getAll: 전체 조회 -->
+  <select id="getAll" resultType="ReportVO">
+    SELECT report_sq "reportSq", 
+           type_sq "typeSq", 
+           TO_CHAR(report_dt, DECODE(TRUNC(report_dt), TRUNC(SYSDATE), 'HH24:MI:SS', 'YYYY/MM/DD HH24:MI:SS')) "reportDt", 
+           report_cc_sq "reportCcSq", 
+           report_ct "reportCt", 
+           report_cnt "reportCnt", 
+           report_st "reportSt" 
+    FROM report_t 
+  </select>
+
+  <!-- getAll: 전체 개수 -->
+  <select id="getCount" resultType="int">
+    SELECT count(*) "cnt"
+    FROM report_t
+  </select>
+
+  <!-- getAll: 전체 삭제 -->
+  <delete id="deleteAll">
+    DELETE FROM report_t
+  </delete>
+
+  <!-- getLastData: 마지막 입력된 값 가져오기 -->
+  <select id="getLastData" resultType="ReportVO">
+    SELECT report_sq "reportSq", 
+           type_sq "typeSq", 
+           TO_CHAR(report_dt, DECODE(TRUNC(report_dt), TRUNC(SYSDATE), 'HH24:MI:SS', 'YYYY/MM/DD HH24:MI:SS')) "reportDt", 
+           report_cc_sq "reportCcSq", 
+           report_ct "reportCt", 
+           report_cnt "reportCnt", 
+           report_st "reportSt" 
+    FROM report_t 
+    WHERE report_dt = (
+        SELECT LAST_VALUE(report_dt) OVER()
+        FROM report_t
+    )
+  </select>
+
+
+</mapper>

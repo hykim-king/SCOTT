@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" th:fragment="sidebarFragment" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link " href="index.html">
+          <i class="bi bi-grid"></i>
+          <span>HOME</span>
+        </a>
+      </li><!-- End Dashboard Nav -->
+
+      <li class="nav-heading">MANAGEMENT</li>
+
+      <li class="nav-item">
+      
+        <a class="nav-link collapsed" data-bs-target="#icons-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-gem"></i><span>회원 관리</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        
+        <ul id="icons-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>가입 현황</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>회원 목록</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End User Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+          <i class="bi bi-person"></i>
+          <span>운동 관리</span>
+        </a>
+      </li><!-- End Work Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#">
+          <i class="bi bi-question-circle"></i>
+          <span>음식 데이터 관리</span>
+        </a>
+      </li><!-- End Food Nav -->
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#commu-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-gem"></i><span>커뮤니티 관리</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="commu-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>게시글 관리</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>댓글 관리</span>
+            </a>
+          </li>
+          <li>
+            <a href="#">
+              <i class="bi bi-circle"></i><span>신고 관리</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End 게시글 Nav -->
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+</html>

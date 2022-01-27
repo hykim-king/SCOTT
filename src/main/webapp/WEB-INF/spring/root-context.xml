@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:aop="http://www.springframework.org/schema/aop"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+  <!-- Root Context: defines shared resources visible to all other web components -->
+  <!-- MyBatis Settings : DB -->
+  <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+    <constructor-arg index="0" ref="sqlSessionFactoryBean"></constructor-arg>
+  </bean>
+
+  <!-- MyBatis Settings : read Configuration file -->
+  <bean id="sqlSessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+    <property name="configLocation" value="classpath:mybatis-config.xml" />
+    <property name="mapperLocations" value="classpath:mapper/**/*.xml"></property>
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+  
+  <!-- tx namespace를 사용하는 트랜잭션 -->
+  <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+    <property name="dataSource" ref="dataSource" />
+  </bean>
+
+  <tx:advice id="txAdvice" transaction-manager="transactionManager">
+    <tx:attributes>
+      <!-- do로 시작하는 모든 메서드는 트랜잭션 관리 대상에서 제외함 -->
+      <tx:method name="do*" read-only="true" />
+      <!-- up으로 시작하는 모든 메서드는 트랜잭션 관리 대상에 포함함 -->
+      <tx:method name="up*" read-only="false" />
+    </tx:attributes>
+  </tx:advice>
+
+  <!-- AOP -->
+  <aop:config>
+    <aop:pointcut
+      expression="execution(* kr.peeinnkim.scott..service.*Impl.up*(..))"
+      id="txPointCut" />
+    <aop:advisor advice-ref="txAdvice" pointcut-ref="txPointCut" />
+  </aop:config>
+
+  <!-- MailSender for Dev -->
+  <bean id="dummyMailSender" class="kr.scott.ngg.cmn.DummyMailSender" />
+
+  <!-- Naver SMTP -->
+  <bean id="mailSender"
+    class="org.springframework.mail.javamail.JavaMailSenderImpl">
+    <property name="host" value="smtp.naver.com" />
+    <property name="port" value="465" />
+    <property name="username" value="" />
+    <property name="password" value="" />
+    <property name="defaultEncoding" value="utf-8" />
+    <property name="javaMailProperties">
+      <props>
+        <prop key="mail.smtp.host">smtp.naver.com</prop>
+        <prop key="mail.smtp.port">465</prop>
+        <prop key="mail.smtp.auth">true</prop>
+        <prop key="mail.smtp.ssl.protocols">TLSv1.2</prop>
+        <prop key="mail.smtp.ssl.enable">true</prop>
+        <prop key="mail.smtp.ssl.trust">smtp.naver.com</prop>
+        <prop key="mail.debug">true</prop>
+      </props>
+    </property>
+  </bean>
+
+  <!-- Read properties file -->
+  <context:property-placeholder location="classpath:resource/config/database.properties" />
+  <!-- Database Connection -->
+  <bean id="dataSource"
+    class="org.apache.commons.dbcp.BasicDataSource">
+    <property name="driverClassName" value="${jdbc.driverClass}" />
+    <property name="url" value="${jdbc.url}" />
+    <property name="username" value="${jdbc.username}" />
+    <property name="password" value="${jdbc.password}" />
+
+    <!-- 최대 접속 허용 개수 -->
+    <property name="maxActive" value="${jdbc.maxActive}" />
+    <!-- 여분 커넥션 개수 -->
+    <property name="maxIdle" value="${jdbc.maxIdle}" />
+    <!-- DB연결 대기 시간 (ms) -->
+    <property name="maxWait" value="${jdbc.maxWait}" />
+    <!-- 잘못 관리되어 버려진 connection을 찾아서 재활용 -->
+    <property name="removeAbandoned" value="${jdbc.removeAbandoned}"/>
+    <!-- 버려진 연결로 인식할 기본 시간(s) -->
+    <property name="removeAbandonedTimeout" value="${jdbc.removeAbandonedTimeout}"/>
+  </bean>
+
+
+</beans>

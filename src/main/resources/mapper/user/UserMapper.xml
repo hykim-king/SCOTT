@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.scott.ngg.UserMapper">
+
+  <select id="doSelectOne" parameterType="UserVO" resultType="UserVO">
+		SELECT user_id "userId", 
+		       user_pw "userPw", 
+		       user_nn "userNn", 
+		       user_email "userEmail", 
+		       user_birth "userBirth", 
+		       user_gender "userGender", 
+		       user_height "userHeight", 
+		       user_weight "userWeight", 
+		       user_grade "userGrade", 
+		       user_actkcal "userActkcal", 
+		       user_goal "userGoal", 
+		       user_join_dt "userJoinDt", 
+		       user_point "userPoint", 
+		       user_last_login "userLastLogin", 
+		       user_is_admin "userIsAdmin", 
+		       user_is_active "userIsActive" 
+		FROM user_t 
+		WHERE user_id = #{userId}
+  </select>
+
+  <update id="doUpdate" parameterType="UserVO">
+		UPDATE user_t
+		SET USER_PW = #{userPw}, 
+		    USER_NN = #{userNn}, 
+		    USER_EMAIL = #{userEmail}, 
+		    USER_BIRTH = #{userBirth}, 
+		    USER_GENDER = #{userGender}, 
+		    USER_HEIGHT = #{userHeight}, 
+		    USER_WEIGHT = #{userWeight}, 
+		    USER_GRADE = #{userGrade}, 
+		    USER_ACTKCAL = #{userActkcal}, 
+		    USER_GOAL = #{userGoal}, 
+		    USER_POINT = #{userPoint}, 
+		    USER_LAST_LOGIN = #{userLastLogin}, 
+		    USER_IS_ADMIN = #{userIsAdmin}, 
+		    USER_IS_ACTIVE = #{userIsActive} 
+		WHERE user_id = #{userId}
+  </update>
+
+  <delete id="doDelete" parameterType="UserVO">
+    DELETE FROM user_t
+    WHERE user_id = #{userId}
+  </delete>
+
+	<insert id="doInsert" parameterType="UserVO">
+		INSERT INTO user_t (
+		    USER_ID, 
+		    USER_PW, 
+		    USER_NN, 
+		    USER_EMAIL, 
+		    USER_BIRTH, 
+		    USER_GENDER, 
+		    USER_HEIGHT, 
+		    USER_WEIGHT, 
+		    USER_GRADE, 
+		    USER_ACTKCAL, 
+		    USER_GOAL, 
+		    USER_JOIN_DT, 
+		    USER_POINT, 
+		    USER_LAST_LOGIN, 
+		    USER_IS_ADMIN, 
+		    USER_IS_ACTIVE 
+		) VALUES (
+		    #{userId},
+		    #{userPw},
+		    #{userNn},
+		    #{userEmail},
+		    #{userBirth},
+		    #{userGender},
+		    #{userHeight},
+		    #{userWeight},
+		    #{userGrade},
+		    #{userActkcal},
+		    #{userGoal},
+		    SYSDATE,
+		    #{userPoint},
+		    SYSDATE,
+		    0,
+		    1
+		)
+	</insert>
+
+
+  <!-- for JUnit Test -->
+  <select id="getAll" resultType="UserVO">
+    SELECT *
+    FROM user_t
+  </select>
+
+  <select id="getCount" resultType="int">
+    SELECT count(*) "cnt"
+    FROM user_t
+  </select>
+
+  <delete id="deleteAll">
+    DELETE FROM user_t
+  </delete>
+
+  
+
+</mapper>

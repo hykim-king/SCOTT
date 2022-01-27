@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.scott.ngg.CommtMapper">
+
+  <select id="selectPageCommt" parameterType="int" resultType="CommtVO" >
+    SELECT
+	    comment_sq,
+	    community_sq,
+	    user_id,
+	    comment_content,
+	    comment_file,
+	    comment_st,
+	    comment_reg_dt,
+	    comment_mod_dt
+	FROM
+	    comment_t
+	WHERE
+	    community_sq=#{communitySq}
+  </select>
+  
+  <insert id="insertCommt" parameterType="CommtVO">
+	INSERT INTO comment_t (
+        community_sq,
+        user_id,
+        comment_content,
+        comment_file,
+        comment_st
+    ) VALUES (
+        #{communitySq},
+        #{userId},
+        #{commentContent},
+        #{commentFile},
+        1
+    )
+  </insert>
+  
+  <delete id="deleteCommt" parameterType="int" >
+    DELETE FROM comment_t
+	WHERE
+	        comment_sq = #{commentSq}
+  </delete>
+  
+  <update id="updateCommt" parameterType="CommtVO">
+	UPDATE comment_t
+	SET
+	    comment_content = #{commentContent}
+	    , comment_file = #{commentFile}
+	    , comment_mod_dt = sysdate
+	WHERE
+        comment_sq = #{commentSq}
+  </update>
+
+
+
+
+  <select id="getCount" resultType="int">
+    SELECT COUNT(*) CNT
+    FROM COMMENT_T
+  </select>
+
+  <delete id="deleteAll">
+    DELETE FROM COMMENT_T
+  </delete>
+  
+  
+</mapper>

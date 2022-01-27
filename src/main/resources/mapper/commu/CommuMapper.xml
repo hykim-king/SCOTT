@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.scott.ngg.CommuMapper">
+
+<insert id="insertCommu" parameterType="CommuVO">
+    INSERT INTO community_t (
+	    community_title,
+	    user_id,
+	    community_content,
+	    community_file,
+	    community_ct,
+	    community_st
+	) VALUES (
+	    #{communityTitle},
+	    #{userId},
+	    #{communityContent},
+	    #{communityFile},
+	    #{communityCt},
+	    #{communitySt}
+	)   
+</insert>
+
+<update id="updateCommu" parameterType="CommuVO">
+    UPDATE community_t
+	SET
+	    community_title = #{communityTitle}
+	    , community_content = #{communityContent}
+	    , community_file = #{communityFile}
+	    , community_ct = #{communityCt}
+	    , community_mod_dt = sysdate
+	WHERE
+	        community_sq = #{communitySq}
+</update>
+
+<delete id="deleteCommu" parameterType="int" >
+    DELETE FROM community_t
+	WHERE
+	        community_sq = #{communitySq}
+</delete>
+
+<update id="updateCnt" parameterType="int">
+    UPDATE community_t
+	SET
+	    community_read_cnt = NVL(community_read_cnt,0)+1
+	WHERE
+	        community_sq = #{communitySq}
+</update>
+
+<select id="selectCommu" parameterType="int" resultType="CommuVO" >
+    SELECT
+	    community_sq communitySq,
+	    community_title communityTitle,
+	    user_id userId,
+	    community_content communityContent,
+	    community_file communityFile,
+	    community_ct communityCt,
+	    community_read_cnt communityReadCnt,
+	    community_st communitySt,
+	    community_mod_dt communityModDt,
+	    community_reg_dt communityRegDt
+	FROM
+	    community_t
+	WHERE
+	    community_sq=#{communitySq}
+</select>
+
+<sql id="searchCondition">
+	<where>
+	<choose>
+		<when test=" '' != searchWord and  '10'== searchDiv">
+            user_id LIKE  '%'|| #{searchWord} || '%'
+		</when>
+		<when test=" '' != searchWord and  '20'== searchDiv">
+            community_title LIKE  '%'|| #{searchWord} || '%'
+        </when>
+        <when test=" '' != searchWord and  '30'== searchDiv">
+            community_content LIKE  '%'|| #{searchWord} || '%'
+        </when>
+	</choose>
+	</where>
+</sql>
+
+<select id="selectSearchCommu" parameterType="SearchVO" resultType="CommuVO" >
+SELECT A.*, B.*
+FROM (
+    SELECT
+        tt1.rnum as num
+        , tt1.community_sq
+        , tt1.community_title
+        , tt1.user_id
+        , tt1.community_content
+        , tt1.community_file
+        , tt1.community_ct
+        , tt1.community_read_cnt
+        , tt1.community_st
+        , tt1.community_mod_dt
+        , CASE
+            WHEN  TO_CHAR(SYSDATE,'YYYYMMDD')=TO_CHAR(tt1.community_reg_dt,'YYYYMMDD') THEN TO_CHAR(tt1.community_reg_dt,'HH24:MI')
+            ELSE  TO_CHAR(tt1.community_reg_dt,'YYYY/MM/DD')
+            END
+    FROM (
+        SELECT ROWNUM rnum, T1.*
+        FROM (
+            SELECT *
+            FROM COMMUNITY_T
+            --검색조건
+            <include refid="searchCondition"/>
+            ORDER BY community_reg_dt DESC
+        )T1
+    )TT1
+    --WHERE rnum BETWEEN 1 AND 10
+    WHERE rnum BETWEEN #{pageSize} * (#{pageNum} -1 ) +1 AND #{pageSize} * (#{pageNum} -1 ) + #{pageSize}
+)A
+CROSS JOIN
+(
+    SELECT COUNT(*) total_cnt
+    FROM COMMUNITY_T
+    --검색조건
+    <include refid="searchCondition"/>
+)B
+</select>
+
+
+
+<delete id="deleteAll">
+    DELETE FROM COMMUNITY_T
+</delete>
+
+<select id="selectKeys" resultType="int">
+    SELECT community_sq FROM COMMUNITY_T
+</select>
+  
+</mapper>
