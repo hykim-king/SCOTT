@@ -31,6 +31,7 @@ let ajaxHelper = {
 	            	console.log(_paramArray[i]+":"+_PARAMETERS[_paramArray[i]]);
 	            }
             }   
+            
             console.log("_METHOD:"+_METHOD);
             console.log("_ASYNC_STATUS:"+_ASYNC_STATUS);
             console.log("=callAjax=========================");
@@ -47,7 +48,7 @@ let ajaxHelper = {
                 error   : function(xhr,status,err){
                 
                     console.log("_errorMsg:"+xhr.status);
-                    if(xhr.status == 400){
+/*                    if(xhr.status == 400){
                          window.location.href = "/ngg/cmn/nullPointerException";
                     }else if(xhr.status == 500){
                          window.location.href = "/ngg/cmn/error";
@@ -55,7 +56,7 @@ let ajaxHelper = {
                         alert(_errorMsg);
                     }else{
                         alert("서버에 요청중 문제가 발생했습니다.\n작성하신 내용이 저장되지 않았습니다.\n오류가 지속되면 관리자에게 문의해주세요.");
-                    }
+                    }*/
                 }
             });
             
@@ -79,4 +80,9 @@ emptyChecker.isEmpty = function(str){
 	return false;
 };
 
+
+/* ----------- Add Comma ----------- */
+let addComma = (num) => {
+	return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+};
 

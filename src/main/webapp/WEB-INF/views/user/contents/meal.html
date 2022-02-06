@@ -15,12 +15,12 @@
       border-bottom: 1px solid black;
     }
     .datepicker {
-	    border: none;
-	    text-align: center;
-	    font-size: 1.7rem;
-	    padding: 6px;
-	    outline: none;
-	    cursor: pointer;
+      border: none;
+      text-align: center;
+      font-size: 1.7rem;
+      padding: 6px;
+      outline: none;
+      cursor: pointer;
     }
     #addBtn,
     .delBtn,
@@ -29,117 +29,138 @@
       cursor: pointer;
     }
     .fDivBadge {
-	    border: 2px solid pink;
-	    border-radius: 10px;
-	    font-size: 9px;
-	    padding: 1px 2px;
+      border: 2px solid pink;
+      border-radius: 10px;
+      font-size: 9px;
+      padding: 1px 2px;
+    }
+    .bi-caret-up-fill {
+      color: deeppink;
+    }
+    .bi-caret-down-fill {
+      color: mediumslateblue;
     }
 </style>
 
 <script>
 $(document).ready(function(){
-		// Date Picker
-		$(".datepicker").datepicker({
-			autoHide: true,
-			days: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
-			daysShort: ['일', '월', '화', '수', '목', '금', '토'],
-			daysMin: ['일', '월', '화', '수', '목', '금', '토'],
-			months: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-			monthsShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-			weekStart: 1,
-			yearFirst: true,
-			yearSuffix: '년',
-			format: 'yyyy.mm.dd'
-		});
-	 
-
-	  /* --- 식단  --------------------------------------- */
-	  // 식단 삭제
-	 $(".delBtn").on("click", function(e){
-		  e.stopPropagation();
-	    let mealSq = $(this).parents().find("input.mealSqHidden").val();
-	    
-	    let url = "[[@{/meal/api/meal/}]]"+mealSq;
-	    let params = {};
-	    let method = "DELETE";
-	    let async = true;
-	          
-	    //console.log(url);
-	    if(confirm("식단을 삭제하시겠습니까?") == false) return;
-	    ajaxHelper.callAjax(url, params, method, async, function(data){
-	    	  alert(data.msgContent);
-	    });
-	 });
-	 
-	 // 식단 저장 버튼 이벤트
-	 $("#mealSaveBtn").on("click", function(){
-		  // Map<String, Object> map / MealVO meal / List<MealdetailVO> mdList
-		  // MealVO datas
-		  let mealSq = $("#mealSqSavor").val();
-		  let userId = "[[${session.user.userId}]]";
-		  let mealKcal = $("#totalKcal").attr("data-kcal");
-		  let mealDate = $(".datepicker").val();
-		  let mealDivs = "";
-		  
-		  let mealdetails = [];
+    // Initial Rendering
+  
+    let mealTotal = 0;
+    let totalPageNum = (mealTotal == 0)? 0: Math.ceil(mealTotal/10);
+    // renderingPage(totalPageNum, 1);
+    
+    // Date Picker
+    $(".datepicker").datepicker({
+        autoHide: true,
+        days: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'],
+        daysShort: ['일', '월', '화', '수', '목', '금', '토'],
+        daysMin: ['일', '월', '화', '수', '목', '금', '토'],
+        months: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthsShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        weekStart: 1,
+        yearFirst: true,
+        yearSuffix: '년',
+        format: 'yyyy.mm.dd'
+    });
+    
+   
+    
+   /* ---------------------------------------------------- 
+    # MEAL LIST 
+   ---------------------------------------------------- */
+    // 식단 목록 갱신
+    $("#pageSize").on("change", function(){
+      console.log($(this).val());
+      doRetrieve(1);
+    });
+    
+    // 식단 삭제
+   $(".delBtn").on("click", function(e){
+      e.stopPropagation();
+      let mealSq = $(this).parents().find("input.mealSqHidden").val();
       
-		  $(".foodList").each(function(i, item){
-			    let values = item.value.split(',');
-			    let md = {
-			    		"mealdetailSq": values[0],
-			    		"mealSq": values[1],
-			    		"mealDiv": values[2],
-			    		"foodSq": 0,
-			    		"foodName": values[3],
-			    		"foodKcal": values[4],
-			    		"foodCt": values[5]
-			    };
-		    	mealdetails.push(md);
-		  });
-		  console.log(mealdetails);
-		  
-		  $(".foodDivCnt").each(function(i, item){
-			     let cnt = Number(item.getAttribute("data-cnt"));
-			     mealDivs += (cnt > 0)? i.toString(): ''; 
-		  });
-		  
-		  let meal = {
-				  "mealSq":mealSq,
-				  "mealDate":mealDate,
-				  "userId":userId,
-				  "mealKcal":mealKcal,
-				  "mealDivs":mealDivs,
-		  };
-		 
-		  let map = new Map();
-		  map.set("meal", meal);
-	    map.set("mdList", mealdetails);
+      let url = "[[@{/meal/api/meal/}]]"+mealSq;
+      let params = {};
+      let method = "DELETE";
+      let async = true;
+            
+      //console.log(url);
+      if(confirm("식단을 삭제하시겠습니까?") == false) return;
+      ajaxHelper.callAjax(url, params, method, async, function(data){
+          alert(data.msgContent);
+      });
+   });
+   
+   // 식단 저장 버튼 이벤트
+   $("#mealSaveBtn").on("click", function(){
+      // Map<String, Object> map / MealVO meal / List<MealdetailVO> mdList
+      // MealVO datas
+      let mealSq = $("#mealSqSavor").val();
+      let userId = "[[${session.user.userId}]]";
+      let mealKcal = $("#totalKcal").attr("data-kcal");
+      let mealDate = $(".datepicker").val();
+      let mealDivs = "";
+      
+      let mealdetails = [];
+      
+      $(".foodList").each(function(i, item){
+          let values = item.value.split(',');
+          let md = {
+              "mealdetailSq": values[0],
+              "mealSq": values[1],
+              "mealDiv": values[2],
+              "foodSq": 0,
+              "foodName": values[3],
+              "foodKcal": values[4],
+              "foodCt": values[5]
+          };
+          mealdetails.push(md);
+      });
+      console.log(mealdetails);
+      
+      $(".foodDivCnt").each(function(i, item){
+           let cnt = Number(item.getAttribute("data-cnt"));
+           mealDivs += (cnt > 0)? i.toString(): ''; 
+      });
+      
+      let meal = {
+          "mealSq":mealSq,
+          "mealDate":mealDate,
+          "userId":userId,
+          "mealKcal":mealKcal,
+          "mealDivs":mealDivs,
+      };
+     
+      let map = new Map();
+      map.set("meal", meal);
+      map.set("mdList", mealdetails);
       
       if(mealSq == 0) { // mealSq가 0이면 최초 등록
-    	  $.ajax({
-	    	  url: "[[@{/meal/api/meal}]]",
-	    	  type:"POST",
-	    	  data: JSON.stringify({
-	    		  "meal":meal,
-	    		  "mdList":mealdetails
-	    	  }),
-	    	  dataType:"json",
-	    	  contentType: "application/json",
-	    	  async: true,
-	    	  success: function(res){
-	    		  console.log(res);
-	    		  
-	    		  $(".btn-close").click();
-	    		  initModal();
-	    		  alert(res.msgContent);
-	    		  
-	    	  },
-	    	  error: function(err){
-	    		  console.log(err);
-	    	  }
-	      });
+        $.ajax({
+          url: "[[@{/meal/api/meal}]]",
+          type:"POST",
+          data: JSON.stringify({
+            "meal":meal,
+            "mdList":mealdetails
+          }),
+          dataType:"json",
+          contentType: "application/json",
+          async: true,
+          success: function(res){
+            console.log(res);
+            
+            $(".btn-close").click();
+            initModal();
+            alert(res.msgContent);
+            doRetrieve(1);
+          },
+          error: function(err){
+            console.log(err);
+          }
+        });
       } else { // mealSq가 0이 아니면 수정
-    	  $.ajax({
+        $.ajax({
           url: "[[@{/meal/api/meal/}]]"+mealSq,
           type:"PUT",
           data: JSON.stringify({
@@ -156,153 +177,310 @@ $(document).ready(function(){
             $(".btn-close").click();
             initModal();
             alert(res.msgContent);
+            doRetrieve(1);
             
           },
           error: function(err){
             console.log(err);
           }
          });
-        
-          
-    	  
       }
-		  
-		  
-		  
       
-	 });
-	 
-	 
-	 /* --- 식단 리스트  --------------------------------------- */
-	 // 식단 상세
+   });
+   
+   
+   /* ---------------------------------------------------- 
+    # MEAL DETAIL 
+   ---------------------------------------------------- */
+   // 식단 상세
    const foodDivNames = ["탄", "단", "지", "기"];
-	 
-	 // 식단 리스트에서 삭제
-	 $(".foodDiv").on("click", ".mdDelBtn", function(e){
-		  if(confirm("삭제하시겠습니까?") == false) return;
-		  
-		  // 삭제 리스트에 추가
-		  let mdSq = $(this).attr("data-sq");
-		  if(mdSq != "0") $("#delList").val($("#delList").val() + "," + mdSq);
-		  
-		  // 총 칼로리 계산
-		  let foodKcal = $(this).prev().prev().text().replace(/[가-힣a-z]/gi, '').trim();
-		  let totalKcal = $("#totalKcal").attr("data-kcal");
-	    totalKcal = Number(totalKcal) - Number(foodKcal);
-	    $("#totalKcal").text(totalKcal.toLocaleString()).attr("data-kcal", totalKcal);
-		  
-		  $(this).parent().next().remove();
-		  $(this).parent("li").remove();
-	 });
-	 
-	 // 식단 리스트에 추가
-	 $("#foodAddBtn").on("click", function(){
-		  let mealSq = $("#mealSqSavor").val();
-			let foodDivs = $(".foodDiv");
-			let mealDiv = $("#mealDiv").val();
-			let foodName = $("#foodName").val();
-			let foodKcal = $("#foodKcal").val() == ""? "0": $("#foodKcal").val();
-			let foodCt = $("#foodCt").val();
-			let totalKcal = $("#totalKcal").attr("data-kcal");
-			totalKcal = Number(totalKcal) + Number(foodKcal);
-			
-			$("#totalKcal").text(totalKcal.toLocaleString()).attr("data-kcal", totalKcal);
-		 
-			let data = {
-				 "mealdetailSq":0,
-				 "mealSq":mealSq,
-				 "mealDiv":Number(mealDiv),
-				 "foodSq":0,
-				 "foodName":foodName,
-				 "foodKcal":Number(foodKcal),
-				 "foodCt":Number(foodCt)
-			};
-		 
-			//console.log(data);
-			
-			drawLine(foodDivs, data);
-			initInput();		 
-	 });//foodAddBtn.click
-	 
-	 // 음식 상세 열기
-	 $(".meal-content").on("click", function(){
-		  $("#addBtn").click();
-		  
-			let mealSq = $(this).find(".mealSqHidden").val();
-			let dateVal = $(this).find(".mealDate").text();
-			console.log(dateVal);
-			 
-			let url = "[[@{/meal/api/meal/}]]"+mealSq;
-	    let params = {};
-	    let method = "GET";
-	    let async = true;
-		        
-      ajaxHelper.callAjax(url, params, method, async, function(data){
-    	  let totalKcal = 0;
-   	    let foodDivs = $(".foodDiv");
-   	    foodDivs.empty();
-   	    $(".datepicker").val(dateVal);
-   	    
-	      $("#mealSqSavor").val(data[0].mealSq);
-	      
-   	    $.each(data, function(idx, item){
-   	       console.log(item);
-   	       totalKcal += item.foodKcal;
-   	        
-		   	   drawLine(foodDivs, item);
-   	     });
-   	    
-   	    $("#totalKcal").text(totalKcal.toLocaleString()).attr("data-kcal", totalKcal);
-   	    
-		 });
+
+   
+   // 엔터 입력
+   $("#foodKcal").on("keypress", function(e){
+      if(e.which == 13) {
+        e.preventDefault();
+        $("#foodAddBtn").click();
+        $("#foodName").focus();
+      }
+    });
+   
+   
+   // 모달창 닫힐 때 초기화
+   $('.modal').on('hidden.bs.modal', function () {
+      initModal();
+   });   
+   
+   
+   // 식단 리스트에서 삭제
+   $(".foodDiv").on("click", ".mdDelBtn", function(e){
+      if(confirm("삭제하시겠습니까?") == false) return;
       
-	 });//--meal-content.click
-	 
-	 $(".btn-close").on("click", initModal);
-	 $("#modalCloseBtn").on("click", initModal);
-	 
-	 /* ----------------- FUNCTIONS -------------*/
-	 function initInput(){
-		  $("#mealDiv").val(0);
-		  $("#foodName").val("");
-		  $("#foodKcal").val("");
-		  $("#foodCt").val(0);
-		  $("#delList").val("");
-		  $(":focus").blur();
-	 }
-	 
-	 function initModal(){
-		  $("#mealSqSavor").val(0);
-		  $(".datepicker").val("");
-		  $("#totalKcal").text(0).attr("data-kcal", 0);
-		  initInput();
-		  $(".foodDiv").empty();
-	 }
-	 
-	 // li 한줄. list: 추가될 목록 그룹, data: mealdetailVO
-	 function drawLine(list, data){
-		  let liStr = '<span class="ms-1 me-1">'+data.foodName
-				         +'<span clss="foodKcal"> '+data.foodKcal.toLocaleString()+'</span>kcal</span>'
-				         +'<sup class="fDivBadge me-2">'+foodDivNames[data.foodCt]+'</sup>'
-				         +'<i class="bi bi-backspace mdDelBtn" data-sq="'+data.mealdetailSq+'"></i>';
+      // 삭제 리스트에 추가
+      let mdSq = $(this).attr("data-sq");
+      if(mdSq != "0") $("#delList").val($("#delList").val() + "," + mdSq);
+      
+      // div수정
+      let counter = $(this).parents("ul").prev(".foodDivCnt");
+      counter.attr("data-cnt", Number(counter.attr("data-cnt"))-1);
+      
+      // 총 칼로리 계산
+      let foodKcal = $(this).prev().prev().text().replace(/[가-힣a-z]/gi, '').trim();
+      let totalKcal = $("#totalKcal").attr("data-kcal");
+      totalKcal = Number(totalKcal) - Number(foodKcal);
+      $("#totalKcal").text(totalKcal.toLocaleString()).attr("data-kcal", totalKcal);
+      
+      $(this).parent().next().remove();
+      $(this).parent("li").remove();
+   });
+   
+   
+   // 식단 리스트에 추가
+   $("#foodAddBtn").on("click", function(){
+      let foodName = $("#foodName").val();
+      if(emptyChecker.isEmpty(foodName)) {
+        alert("음식 이름을 입력하세요"); 
+        $("#foodName").focus();
+        return false;
+      }
+      
+      let mealSq = $("#mealSqSavor").val();
+      let foodDivs = $(".foodDiv");
+      let mealDiv = $("#mealDiv").val();
+      let foodKcal = $("#foodKcal").val() == ""? "0": $("#foodKcal").val();
+      let foodCt = $("#foodCt").val();
+      let totalKcal = $("#totalKcal").attr("data-kcal");
+      totalKcal = Number(totalKcal) + Number(foodKcal);
+      
+      $("#totalKcal").text(totalKcal.toLocaleString()).attr("data-kcal", totalKcal);
+     
+      let data = {
+         "mealdetailSq":0,
+         "mealSq":mealSq,
+         "mealDiv":Number(mealDiv),
+         "foodSq":0,
+         "foodName":foodName,
+         "foodKcal":Number(foodKcal),
+         "foodCt":Number(foodCt)
+      };
+     
+      //console.log(data);
+      
+      drawLine(foodDivs, data);
+      initInput();     
+   });
+   
+   
+   // 음식 추가 열기
+   $("#addBtn").on("click", function(){
+     let today = new Date();
+     let todayMonth = (today.getMonth())<9? "0"+(today.getMonth()+1): (today.getMonth()+1);
+     let todayDate = (today.getDate())<10? "0"+(today.getDate()): (today.getDate());
+     let todayStr = today.getFullYear() + "." + todayMonth + "." + todayDate;
+     console.log(todayStr);
+     
+     $(".datepicker").val(todayStr);
+   });
+   
+   
+   // 음식 상세 열기
+   $(".meal-container").on("click", ".meal-content", function(){
+      $("#addBtn").click();
+      
+      let mealSq = $(this).find(".mealSqHidden").val();
+      let dateVal = $(this).find(".mealDate").text();
+      console.log(dateVal);
+       
+      let url = "[[@{/meal/api/meal/}]]"+mealSq;
+      let params = {};
+      let method = "GET";
+      let async = true;
             
-			let hdVal = document.createElement("input");
-			hdVal.setAttribute("type", "hidden");
-			hdVal.setAttribute("class", "foodList");
-			
-			let foodInfo = data.mealdetailSq + "," + data.mealSq + "," + data.mealDiv + "," + data.foodName + "," + data.foodKcal + "," + data.foodCt; 
-			hdVal.value = foodInfo;
-			 
-			let temp = document.createElement("li");
-			temp.innerHTML = liStr;
-			
-			let counter = document.getElementsByClassName("foodDivCnt");
-			
-			counter[data.mealDiv].setAttribute("data-cnt", Number(counter[data.mealDiv].getAttribute("data-cnt")) + 1);
-			list[data.mealDiv].appendChild(temp);
-			list[data.mealDiv].appendChild(hdVal);
-	 }
-	 
+      ajaxHelper.callAjax(url, params, method, async, function(data){
+        let totalKcal = 0;
+        let foodDivs = $(".foodDiv");
+        foodDivs.empty();
+        $(".datepicker").val(dateVal);
+        
+        $("#mealSqSavor").val(data[0].mealSq);
+        
+        $.each(data, function(idx, item){
+           console.log(item);
+           totalKcal += item.foodKcal;
+            
+           drawLine(foodDivs, item);
+         });
+        
+        $("#totalKcal").text(totalKcal.toLocaleString()).attr("data-kcal", totalKcal);
+        
+     });
+      
+   });
+   
+   // 식단 상세창이 닫힐 때 초기화
+   $(".btn-close").on("click", initModal);
+   $("#modalCloseBtn").on("click", initModal);
+   
+   
+   /* ---------------------------------------------------- 
+      # FUNCTIONS 
+   ---------------------------------------------------- */
+   $(".numberOnly").on("keyup", function(e){
+      $(this).val($(this).val().replace(/[^0-9$]/g, ""));
+    });
+   
+   function initInput(){
+      $("#mealDiv").val(0);
+      $("#foodName").val("");
+      $("#foodKcal").val("");
+      $("#foodCt").val(0);
+      $("#delList").val("");
+      $(":focus").blur();
+   }
+   
+   function initModal(){
+      $(".foodDivCnt").attr("data-cnt", 0);
+      $("#mealSqSavor").val(0);
+      $(".datepicker").val("");
+      $("#totalKcal").text(0).attr("data-kcal", 0);
+      initInput();
+      $(".foodDiv").empty();
+   }
+   
+   // 식단 상세 그리기 - li 한줄. list: 추가될 목록 그룹, data: mealdetailVO
+   function drawLine(list, data){
+      let liStr = '<span class="ms-1 me-1">'+data.foodName
+                 +'<span clss="foodKcal"> '+data.foodKcal.toLocaleString()+'</span>kcal</span>'
+                 +'<sup class="fDivBadge me-2">'+foodDivNames[data.foodCt]+'</sup>'
+                 +'<i class="bi bi-backspace mdDelBtn" data-sq="'+data.mealdetailSq+'"></i>';
+            
+      let hdVal = document.createElement("input");
+      hdVal.setAttribute("type", "hidden");
+      hdVal.setAttribute("class", "foodList");
+      
+      let foodInfo = data.mealdetailSq + "," + data.mealSq + "," + data.mealDiv + "," + data.foodName + "," + data.foodKcal + "," + data.foodCt; 
+      hdVal.value = foodInfo;
+       
+      let temp = document.createElement("li");
+      temp.innerHTML = liStr;
+      
+      let counter = document.getElementsByClassName("foodDivCnt");
+      
+      counter[data.mealDiv].setAttribute("data-cnt", Number(counter[data.mealDiv].getAttribute("data-cnt")) + 1);
+      list[data.mealDiv].appendChild(temp);
+      list[data.mealDiv].appendChild(hdVal);
+   }
+   
+   // pager
+   // pageTotal: 총글수/페이지 사이즈, page; 현재 페이지
+   function renderingPage(pageTotal, page) {
+      console.log("renderingPage: "+pageTotal);
+      // 이전에 연결된 이벤트 핸들러를 제거함
+      $('#page-selection').unbind('page');
+     
+      $('#page-selection').bootpag({
+         total: pageTotal,
+         page: page,
+         maxVisible: 10,
+         leaps: true,
+         firstLastUse: true,
+         first: '←',
+         last: '→',
+         wrapClass: 'pagination',
+         activeClass: 'active',
+         disabledClass: 'disabled',
+         nextClass: 'next',
+         prevClass: 'prev',
+         lastClass: 'last',
+         firstClass: 'first'
+      }).on("page", function(event, num){
+         console.log("Page " + num);
+         doRetrieve(num);
+      }); 
+   }
+   
+   // 조건에 맞는 식단 목록을 가져오는 함수
+   function doRetrieve(page) {
+     let url = "[[@{meal/api/meal}]]";
+     let params = {
+         "pageSize" : $("#pageSize").val(),
+         "pageNum" : page,
+         "searchDiv" : "99",
+         "searchWord" : "[[${session.user.userId}]]"
+     };
+     let method = "GET";
+     let async = true;
+     
+     ajaxHelper.callAjax(url, params, method, async, function(res){
+       console.log(res);
+       
+       // for paging
+       let totalCnt = 0; // 총 글수
+       let pageTotal = 1; // 페이지 수
+
+       // 화면 태그를 저장할 변수
+       let tagStr = "";
+       
+       if(res.msgContent == '0') {
+        tagStr += '<div class="bg-warning-light my-2 px-4 py-3 rounded-3 text-center">';
+        tagStr += '  <p class="my-auto">data not found</p>';
+        tagStr += '</div>';
+       } else {
+         totalCnt = res[0].totalNum;
+         $("#totalMealNum").text("총 " + totalCnt + "개");
+         
+         $.each(res, function(i, val) {
+            let mealSq = (val.mealSq == null)? 0: val.mealSq;
+            let diffKcal = Number(val.mealKcal)-Number("[[${session.user.userActkcal}]]");
+            
+            tagStr += '<div class="meal-content bg-primary-light my-2 px-4 py-3 rounded-3">';
+            tagStr += '  <input type="hidden" class="mealSqHidden" value="'+mealSq+'">';
+    
+            tagStr += '  <div class="d-flex justify-content-between align-items-center">';
+            tagStr += '    <div>';
+            tagStr += '      <b class="mealDate">'+val.mealDate+'</b>';
+            tagStr += '    </div>';
+                 
+            tagStr += '    <div>'
+            tagStr += '      <a class="bi bi-trash fs-4 fw-bold delBtn"></a>'  ;        
+            tagStr += '    </div>';
+            tagStr += '  </div>';
+                 
+            tagStr += '  <div class="d-flex justify-content-center flex-shrink align-items-center">';
+            tagStr += '    <div class="d-flex align-items-center justify-content-center flex-fill">';
+            tagStr += '      <p class="fs-4 me-1">'+addComma(val.mealKcal)+'kcal</p>';
+            tagStr += '      <i class="bi '+((diffKcal>0)?'bi-caret-up-fill':'bi-caret-down-fill')+'" style="font-size:13px;">'+addComma(diffKcal)+'kcal</i>';
+            tagStr += '    </div>';
+            
+            tagStr += '    <ul class="list-unstyled d-flex flex-row justify-content-evenly m-0 flex-fill" style="font-size:13px;">';
+            tagStr += val.mealDivs.indexOf('0') != -1? '      <li>아침</li>': '';
+            tagStr += val.mealDivs.indexOf('1') != -1? '      <li>점심</li>': '';
+            tagStr += val.mealDivs.indexOf('2') != -1? '      <li>저녁</li>': '';
+            tagStr += val.mealDivs.indexOf('3') != -1? '      <li>간식</li>': '';
+            tagStr += '    </ul>';
+                   
+            tagStr += '  </div>';
+            tagStr += '</div>';
+        });
+       }
+
+       $(".meal-container").empty();
+       $(".meal-container").append(tagStr);
+       
+       // paging 
+       $("#page-selection").empty();
+       
+       pageTotal = Math.ceil(totalCnt/$("#pageSize").val());
+       renderingPage(pageTotal, page);
+       
+     });
+
+     $("#initBtn").click();
+     
+   }//--doRetrieve(page)
+   
+   
+   
 });
 </script>
 </head>
@@ -315,9 +493,9 @@ $(document).ready(function(){
     <h2 class="text-center" th:text="${#numbers.formatInteger(session.user.userActkcal,3,'COMMA')}+' kcal'"></h2>
     <div>
       <ul class="list-unstyled d-flex flex-row justify-content-evenly" style="font-size:13px;">
-      	<li>탄수화물 50%</li>
-      	<li>단백질30%</li>
-      	<li>지방20%</li>
+        <li>탄수화물 50%</li>
+        <li>단백질30%</li>
+        <li>지방20%</li>
       </ul>      
     </div>
   </div><!-- End User ActKcal -->
@@ -333,12 +511,12 @@ $(document).ready(function(){
           <option value="50">50개</option>
           <option value="100">100개</option>
         </select>
-        <span th:if="${mealList}!=null" th:text="'총 '+'개'">총 글 수</span>
-        <span th:unless="${mealList}!=null" th:text="'총 0개'">총 글 수</span>
+        <span th:if="${mealList!=null and !mealList.isEmpty()}" th:text="'총 '+ ${mealList[0].totalNum} +'개'" id="totalMealNum">총 글 수</span>
+        <span th:unless="${mealList!=null and !mealList.isEmpty()}" th:text="'총 0개'">총 글 수</span>
       </div><!-- End Nuumber per Page -->
       
       <div>
-	      <i class="bi bi-plus-lg fs-3 fw-bolder" id="addBtn" data-bs-toggle="modal" data-bs-target="#inputModal"></i>
+        <i class="bi bi-plus-lg fs-3 fw-bolder" id="addBtn" data-bs-toggle="modal" data-bs-target="#inputModal"></i>
       </div>
     </nav><!-- End Meal Nav -->
     
@@ -347,29 +525,29 @@ $(document).ready(function(){
       <!-- Meal Container -->
       <div class="meal-container">
       
-	      <!-- Meal Content -> 반복될 아이템 -->
-	      <div th:if="${mealList}!=null" th:each="meal : ${mealList}" class="meal-content bg bg-info bg-opacity-10 my-2 px-4 py-3 rounded-3">
-	        <input type="hidden" class="mealSqHidden" th:value="${meal.mealSq}!=null?${meal.mealSq}:0">
-	      
-	        <!-- Meal Content Nav -->
-	        <div class="d-flex justify-content-between align-items-center">
-	          <div>
-	            <b th:text="${meal.mealDate}" class="mealDate">식단날짜</b>
-	          </div>
+        <!-- Meal Content -> 반복될 아이템 -->
+        <div th:if="${mealList!=null and !mealList.isEmpty()}" th:each="meal : ${mealList}" class="meal-content bg-primary-light my-2 px-4 py-3 rounded-3">
+          <input type="hidden" class="mealSqHidden" th:value="${meal.mealSq}!=null?${meal.mealSq}:0">
+        
+          <!-- Meal Content Nav -->
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <b th:text="${meal.mealDate}" class="mealDate">식단날짜</b>
+            </div>
           
-	          <div>
-			        <a class="bi bi-trash fs-4 fw-bold delBtn"></a>          
-	          </div>
-	        </div><!-- End Meal Content Nav -->
-	        
-	        <div class="d-flex justify-content-center flex-shrink align-items-center">
-	          <div class="d-flex align-items-center justify-content-center flex-fill">
-		          <p th:text="${#numbers.formatInteger(meal.mealKcal,3,'COMMA')}+'kcal'" class="fs-4 me-1">총칼로리</p>
-		          
-		          <i class="bi" th:text="${#numbers.formatInteger(meal.mealKcal-session.user.userActkcal,3,'COMMA')}+'kcal'" 
-		            th:classappend="${meal.mealKcal-session.user.userActkcal}>0? bi-caret-up-fill: bi-caret-down-fill" style="font-size:13px;"></i>
-	          </div>
-	          
+            <div>
+              <a class="bi bi-trash fs-4 fw-bold delBtn"></a>          
+            </div>
+          </div><!-- End Meal Content Nav -->
+          
+          <div class="d-flex justify-content-center flex-shrink align-items-center">
+            <div class="d-flex align-items-center justify-content-center flex-fill">
+              <p th:text="${#numbers.formatInteger(meal.mealKcal,3,'COMMA')}+'kcal'" class="fs-4 me-1">총칼로리</p>
+              
+              <i class="bi" th:text="${#numbers.formatInteger(meal.mealKcal-session.user.userActkcal,3,'COMMA')}+'kcal'" 
+                th:classappend="${meal.mealKcal-session.user.userActkcal}>0? bi-caret-up-fill: bi-caret-down-fill" style="font-size:13px;"></i>
+            </div>
+            
             <ul class="list-unstyled d-flex flex-row justify-content-evenly m-0 flex-fill" style="font-size:13px;">
               <li th:if="${#strings.contains(meal.mealDivs, '0')}">아침</li>
               <li th:if="${#strings.contains(meal.mealDivs, '1')}">점심</li>
@@ -377,103 +555,111 @@ $(document).ready(function(){
               <li th:if="${#strings.contains(meal.mealDivs, '3')}">간식</li> 
             </ul>
             
-	        </div>
-	        
-	      </div><!-- End Meal Content -->
-	      
-	      <div th:unless="${mealList}!=null" class="d-flex justify-content-center flex-shrink align-items-center">
-	       <p style="color:red;">data not found</p>
-	      </div>
+          </div>
+          
+        </div><!-- End Meal Content -->
+        
+        <div th:unless="${mealList!=null and !mealList.isEmpty()}" class="bg-warning-light my-2 px-4 py-3 rounded-3 text-center">
+         <p class="my-auto">data not found</p>
+        </div>
     
       </div><!-- End Meal Container -->
-     
+      
+<!--======== Paging ========-->
       <!-- Paging -->
-      <div></div><!-- Paging -->
+      <div class="row col-12 m-auto">
+        <div class="text-center">
+          <nav aria-label="Page navigation example" id="page-selection">
+            <!-- <ul class="pagination" id="page-selection"></ul> -->
+          </nav>
+        </div>
+      </div><!-- End Paging -->
       
     </div><!-- End Meal Area -->
     
-    <!-- Input Modal -->
+    
+<!--======== Input Modal ========-->
     <!-- modal fade -->
     <div class="modal fade" id="inputModal" tabindex="-1" aria-hidden="true">
-		  <div class="modal-dialog">
-		    <div class="modal-content">
-		      <div class="modal-header">
-		        <h5 class="modal-title">식단</h5>
-		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-		      </div>
-		      
-					<div class="modal-body d-flex flex-column mx-auto">
-					  <div class="text-center">
-					    <div>
-					      <input class="datepicker">
-					    </div>
-					    <select id="mealDiv">
-					      <option value="0">아침</option>
-					      <option value="1">점심</option>
-					      <option value="2">저녁</option>
-					      <option value="3">간식</option>
-					    </select>
-					  </div>
-					  
-					  <div class="text-center my-2">
-					    <select id="foodCt">
-					      <option value="0">탄수화물</option>
-					      <option value="1">단백질</option>
-					      <option value="2">지방</option>
-					      <option value="3">기타</option>
-					    </select>
-					    
-					    <input type="text" id="foodName" placeholder="이름" maxlength="20" required class="col-4"/>
-					    <input type="text" id="foodKcal" placeholder="칼로리" maxlength="5" required class="col-2 me-1"/>
-					    
-					    <button class="btn btn-primary" id="foodAddBtn">추가</button>
-					  </div>
-					  
-					  <!-- Food List -->
-					  <div class="row">
-					    <h6 class="text-center mt-4 mb-2">총 칼로리 <span id="totalKcal" data-kcal="0"></span>kcal</h6>
-					    <ul class="overflow-auto list-unstyled" id="foodList">
-					    
-					      <li class="d-flex justify-content-between align-items-center my-2">
-					        <span class="col-3 text-center foodDivCnt" data-cnt="0">아침</span>
-					        <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
-					        </ul>
-					      </li>
-					      
-					      <li class="d-flex justify-content-between align-items-center my-3">
-					        <span class="col-3 text-center foodDivCnt" data-cnt="0">점심</span>
-					        <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
-					        </ul>
-					      </li>
-					      
-					      <li class="d-flex justify-content-between align-items-center my-3">
-					        <span class="col-3 text-center foodDivCnt" data-cnt="0">저녁</span>
-					        <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
-					        </ul>
-					      </li>
-					      
-					      <li class="d-flex justify-content-between align-items-center my-3">
-					        <span class="col-3 text-center foodDivCnt" data-cnt="0">간식</span>
-					        <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
-					        </ul>
-					      </li>
-					      
-					    </ul>
-					    
-					    <input type="hidden" id="delList" />
-					  </div><!-- End Food List -->
-					  
-					</div><!-- End Input Modal -->
-		      
-		      <div class="modal-footer justify-content-center">
-		        <input type="hidden" id="mealSqSavor" value="0" />
-		        <button type="button" id="modalCloseBtn"  class="btn btn-secondary " data-bs-dismiss="modal">닫기</button>
-		        <button type="button" id="mealSaveBtn" class="btn btn-primary">저장</button>
-		      </div>
-		      
-		    </div>
-		  </div>
-		</div>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">식단</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          
+          <div class="modal-body d-flex flex-column mx-auto">
+            <div class="text-center">
+              <div>
+                <input class="datepicker">
+              </div>
+              <select id="mealDiv">
+                <option value="0">아침</option>
+                <option value="1">점심</option>
+                <option value="2">저녁</option>
+                <option value="3">간식</option>
+              </select>
+            </div>
+            
+            <div class="text-center my-2">
+              <select id="foodCt">
+                <option value="0">탄수화물</option>
+                <option value="1">단백질</option>
+                <option value="2">지방</option>
+                <option value="3">기타</option>
+              </select>
+              
+              <input type="text" id="foodName" placeholder="이름" maxlength="20" required class="col-4"/>
+              <input type="text" id="foodKcal" placeholder="칼로리" maxlength="5" required class="col-2 me-1 numberOnly" />
+              
+              <button class="btn btn-primary" id="foodAddBtn">추가</button>
+            </div>
+            
+            <!-- Food List -->
+            <div class="row">
+              <h6 class="text-center mt-4 mb-2">총 칼로리 <span id="totalKcal" data-kcal="0"></span>kcal</h6>
+              <ul class="overflow-auto list-unstyled" id="foodList">
+              
+                <li class="d-flex justify-content-between align-items-center my-2">
+                  <span class="col-3 text-center foodDivCnt" data-cnt="0">아침</span>
+                  <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
+                  </ul>
+                </li>
+                
+                <li class="d-flex justify-content-between align-items-center my-3">
+                  <span class="col-3 text-center foodDivCnt" data-cnt="0">점심</span>
+                  <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
+                  </ul>
+                </li>
+                
+                <li class="d-flex justify-content-between align-items-center my-3">
+                  <span class="col-3 text-center foodDivCnt" data-cnt="0">저녁</span>
+                  <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
+                  </ul>
+                </li>
+                
+                <li class="d-flex justify-content-between align-items-center my-3">
+                  <span class="col-3 text-center foodDivCnt" data-cnt="0">간식</span>
+                  <ul class="d-flex flex-column align-items-end list-unstyled foodDiv">
+                  </ul>
+                </li>
+                
+              </ul>
+              
+              <input type="hidden" id="delList" />
+            </div><!-- End Food List -->
+            
+          </div><!-- End Input Modal -->
+          
+          <div class="modal-footer justify-content-center">
+            <input type="hidden" id="mealSqSavor" value="0" />
+            <button type="button" id="modalCloseBtn"  class="btn btn-secondary " data-bs-dismiss="modal">닫기</button>
+            <button type="button" id="mealSaveBtn" class="btn btn-primary">저장</button>
+          </div>
+          
+        </div>
+      </div>
+    </div>
     
     
     
